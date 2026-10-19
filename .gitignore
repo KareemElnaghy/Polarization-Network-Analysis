@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Project data and outputs
+data/
+results/
+*.ckpt
+!data/
+!data/*/
+!data/*/.gitkeep
+!results/
+!results/.gitkeep
+
+# Local configuration and secrets
+.env
+
+# Notebooks
+.ipynb_checkpoints/

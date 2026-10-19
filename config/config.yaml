@@ -1,0 +1,9 @@
+window_size_days: 30
+min_activity_threshold: 1
+llm_model_name: llama3.2
+llm_base_url: http://localhost:11434
+random_seed: 42
+data_paths:
+  raw: data/raw
+  interim: data/interim
+  processed: data/processed
