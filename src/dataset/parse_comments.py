@@ -4,6 +4,11 @@ Streams a Politosphere ``comments_YYYY-MM.bz2`` dump line by line, applies the
 scope filters from ``docs/decisions.md`` while reading, and writes the kept
 comments to Parquet. Nothing is fully decompressed to disk or held in memory.
 
+Outputs, per month, under ``data/interim/comments/``:
+    comments_YYYY-MM.parquet                 kept comments
+    stats/comments_YYYY-MM.stats.json        line counts per filter
+    dropped/comments_YYYY-MM.dropped.parquet ids dropped by the author/language filters
+
 Usage:
     python src/dataset/parse_comments.py 2016-06
     python src/dataset/parse_comments.py 2016-01 2016-02 ... 2016-12 --workers 6
@@ -107,12 +112,18 @@ def iter_filtered_comments(
     subreddits: frozenset[str],
     excluded_authors: frozenset[str],
     stats: ParseStats,
+    dropped_sink: list[tuple[str, str, str]] | None = None,
 ) -> Iterator[dict[str, Any]]:
     """Yield comments from a ``.bz2`` dump that pass the scope filters.
 
     Kept: ``start <= created_utc < end``, subreddit in ``subreddits``, author not
     excluded, ``language`` English or undetermined. Top-level comments are kept (as potential
     parents) with ``is_reply = False``; only ``t1_`` parents are replies.
+
+    If ``dropped_sink`` is given, ``(id, author, reason)`` is appended for every comment
+    dropped by the author or language filter, so reply edges with a missing parent can be
+    explained later. Bot and AutoModerator authors are reported as ``author_bot`` and
+    ``[deleted]`` authors as ``author_deleted``.
     """
     lo, hi = int(start.timestamp()), int(end.timestamp())
     drop = stats.dropped
@@ -131,8 +142,13 @@ def iter_filtered_comments(
                 drop["subreddit"] += 1
             elif c["author"] in excluded_authors:
                 drop["author"] += 1
+                if dropped_sink is not None:
+                    reason = "author_deleted" if c["author"] == DELETED_AUTHOR else "author_bot"
+                    dropped_sink.append((c["id"], c["author"], reason))
             elif c.get("language") not in KEPT_LANGUAGES:
                 drop["language"] += 1
+                if dropped_sink is not None:
+                    dropped_sink.append((c["id"], c["author"], "language"))
             else:
                 is_reply = c["parent_id"].startswith(REPLY_PREFIX)
                 stats.kept += 1
@@ -159,19 +175,26 @@ def parse_raw_comments(
     end: datetime,
     subreddits: frozenset[str],
     excluded_authors: frozenset[str],
+    dropped_path: str | Path | None = None,
     batch_size: int = BATCH_SIZE,
 ) -> ParseStats:
-    """Stream ``raw_path``, filter, and write the kept comments to Parquet at ``out_path``."""
+    """Stream ``raw_path``, filter, and write the kept comments to Parquet at ``out_path``.
+
+    If ``dropped_path`` is given, also write ``(id, author, reason)`` for comments dropped by
+    the author or language filters there.
+    """
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     tmp = out_path.with_suffix(out_path.suffix + ".tmp")
     stats = ParseStats(source=str(raw_path), output=str(out_path))
     t0 = time.perf_counter()
+    dropped: list[tuple[str, str, str]] | None = [] if dropped_path else None
 
     batch: list[dict[str, Any]] = []
     with pq.ParquetWriter(tmp, SCHEMA, compression="zstd") as writer:
         for row in iter_filtered_comments(raw_path, start=start, end=end, subreddits=subreddits,
-                                          excluded_authors=excluded_authors, stats=stats):
+                                          excluded_authors=excluded_authors, stats=stats,
+                                          dropped_sink=dropped):
             batch.append(row)
             if len(batch) >= batch_size:
                 writer.write_table(pa.Table.from_pylist(batch, schema=SCHEMA))
@@ -179,6 +202,12 @@ def parse_raw_comments(
         if batch:
             writer.write_table(pa.Table.from_pylist(batch, schema=SCHEMA))
     tmp.replace(out_path)
+    if dropped_path:
+        Path(dropped_path).parent.mkdir(parents=True, exist_ok=True)
+        ids, authors, reasons = zip(*dropped) if dropped else ((), (), ())
+        pq.write_table(pa.table({"id": list(ids), "author": list(authors),
+                                 "reason": pa.array(reasons, pa.string()).dictionary_encode()}),
+                       dropped_path, compression="zstd")
 
     stats.seconds = time.perf_counter() - t0
     stats.output_bytes = out_path.stat().st_size
@@ -205,10 +234,13 @@ def _parse_month(month: str, raw_dir: Path, out_dir: Path, start: datetime | Non
         out_dir / f"comments_{month}.parquet",
         start=start or m_start, end=end or m_end,
         subreddits=subreddits, excluded_authors=excluded,
+        dropped_path=out_dir / "dropped" / f"comments_{month}.dropped.parquet",
     )
     record = asdict(stats)
     record["dropped"] = dict(stats.dropped)
-    Path(stats.output).with_suffix(".stats.json").write_text(json.dumps(record, indent=2))
+    stats_path = out_dir / "stats" / f"comments_{month}.stats.json"
+    stats_path.parent.mkdir(parents=True, exist_ok=True)
+    stats_path.write_text(json.dumps(record, indent=2))
     return stats
 
 

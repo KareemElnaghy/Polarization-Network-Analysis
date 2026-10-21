@@ -57,14 +57,19 @@ def test_parse_raw_comments_applies_scope_filters(tmp_path):
 
     start, end = month_bounds("2016-06")
     out = tmp_path / "out.parquet"
+    dropped = tmp_path / "dropped.parquet"
     stats = parse_raw_comments(tmp_path / "comments.bz2", out, start=start, end=end,
-                               subreddits=subs, excluded_authors=excluded)
+                               subreddits=subs, excluded_authors=excluded, dropped_path=dropped)
 
     table = pq.read_table(out).to_pydict()
     assert table["id"] == ["keep_reply", "keep_top", "undetermined"]
     assert table["is_reply"] == [True, False, True]
     assert (stats.lines, stats.kept, stats.kept_replies) == (9, 3, 2)
     assert stats.dropped == {"date": 1, "subreddit": 1, "author": 3, "language": 1}
+    reasons = pq.read_table(dropped).to_pydict()
+    assert dict(zip(reasons["id"], reasons["reason"])) == {
+        "bot": "author_bot", "automod": "author_bot", "deleted": "author_deleted", "dutch": "language",
+    }
 
 
 def test_month_bounds_wraps_december():
