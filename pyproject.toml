@@ -19,6 +19,8 @@ dependencies = [
     "ollama>=0.4",
     "requests>=2.31",
     "tqdm>=4.66",
+    "pyarrow>=14.0",
+    "orjson>=3.9",
 ]
 
 [tool.setuptools.packages.find]
