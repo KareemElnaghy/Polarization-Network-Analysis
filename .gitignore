@@ -17,6 +17,7 @@ results/
 data/*/*
 !data/*/.gitkeep
 !results/
+results/*
 !results/.gitkeep
 
 # Local configuration and secrets
