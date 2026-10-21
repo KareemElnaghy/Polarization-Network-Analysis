@@ -14,8 +14,10 @@ results/
 *.ckpt
 !data/
 !data/*/
+data/*/*
 !data/*/.gitkeep
 !results/
+results/*
 !results/.gitkeep
 
 # Local configuration and secrets
