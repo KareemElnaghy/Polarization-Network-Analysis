@@ -32,7 +32,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 EDGES_DIR = PROJECT_ROOT / "data" / "interim" / "edges"
 RESULTS_DIR = PROJECT_ROOT / "results" / "graph_stats"
 THRESHOLDS = (1, 2, 3, 5, 10, 20)
-FOCUS_SUBREDDIT = "politics"
+# Subreddits whose reply counts and shares are reported per window.
+FOCUS_SUBREDDITS = ("politics", "PoliticalDiscussion", "NeutralPolitics", "Ask_Politics")
 
 
 def _summary(values: np.ndarray, prefix: str) -> dict[str, float]:
@@ -88,22 +89,43 @@ def window_stats(edges: pa.Table, kind: str, data_start: datetime, data_end: dat
                  min_activity_threshold: int = 1) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Per-window graph stats plus long-format degree counts for each window."""
     rows, degrees = [], []
-    is_focus = pc.equal(edges["subreddit"], FOCUS_SUBREDDIT)
-    edges = edges.append_column("_focus", is_focus)
     for gw in iter_time_windowed_graphs(edges, kind, min_activity_threshold):
-        col = WINDOW_COLUMNS[kind]
-        sel = edges.filter(pc.equal(edges[col], pa.scalar(gw.window.start, edges.schema.field(col).type)))
-        focus = pc.sum(sel["_focus"]).as_py() or 0
         row = {"window_start": gw.window.start.date(), "complete": is_complete(gw.window, data_start, data_end),
-               "replies": gw.metadata["edges"], f"{FOCUS_SUBREDDIT}_replies": focus,
-               f"{FOCUS_SUBREDDIT}_share": focus / gw.metadata["edges"] if gw.metadata["edges"] else 0.0}
+               "replies": gw.metadata["edges"]}
         row.update(compute_graph_stats(gw.graph))
         rows.append(row)
         deg = degree_counts(gw.graph)
         deg.insert(0, "window_start", gw.window.start.date())
         degrees.append(deg)
         print(f"  {kind} {gw.window.start.date()}: {row['nodes']:,} nodes, {row['edges']:,} edges", flush=True)
-    return pd.DataFrame(rows), pd.concat(degrees, ignore_index=True)
+    stats = pd.DataFrame(rows).merge(subreddit_counts(edges, kind), on="window_start", how="left")
+    return stats, pd.concat(degrees, ignore_index=True)
+
+
+def subreddit_counts(edges: pa.Table, kind: str, subreddits=FOCUS_SUBREDDITS) -> pd.DataFrame:
+    """Per window: ``<subreddit>_replies`` (edge rows) and ``<subreddit>_share`` of all replies."""
+    col = WINDOW_COLUMNS[kind]
+    counts = edges.group_by([col, "subreddit"]).aggregate([("source", "count")]).to_pandas()
+    wide = counts.pivot_table(index=col, columns="subreddit", values="source_count", aggfunc="sum", fill_value=0)
+    total = wide.sum(axis=1)
+    out = pd.DataFrame(index=wide.index)
+    for sub in subreddits:
+        n = wide[sub] if sub in wide.columns else 0
+        out[f"{sub}_replies"] = n
+        out[f"{sub}_share"] = n / total
+    out = out.reset_index().rename(columns={col: "window_start"})
+    out["window_start"] = pd.to_datetime(out["window_start"]).dt.date
+    return out
+
+
+def update_subreddit_counts(stats_csv: Path, edges: pa.Table, kind: str) -> pd.DataFrame:
+    """Replace the per-subreddit columns of an existing stats CSV without recomputing graphs."""
+    stats = pd.read_csv(stats_csv)
+    stats = stats.drop(columns=[c for c in stats.columns if c.endswith(("_replies", "_share")) and c != "replies"])
+    stats["window_start"] = pd.to_datetime(stats["window_start"]).dt.date
+    stats = stats.merge(subreddit_counts(edges, kind), on="window_start", how="left")
+    stats.to_csv(stats_csv, index=False)
+    return stats
 
 
 def threshold_sweep(edges: pa.Table, kind: str, thresholds=THRESHOLDS) -> pd.DataFrame:
@@ -164,7 +186,7 @@ def make_plots(weekly: pd.DataFrame, monthly: pd.DataFrame, monthly_deg: pd.Data
     series(axes[0, 0], "nodes", "Nodes (users)")
     series(axes[0, 1], "edges", "Distinct directed edges")
     series(axes[1, 0], "lcc_fraction", "Largest weakly connected component (fraction of nodes)")
-    series(axes[1, 1], f"{FOCUS_SUBREDDIT}_share", f"Share of replies in r/{FOCUS_SUBREDDIT}")
+    series(axes[1, 1], "politics_share", "Share of replies in r/politics")
     axes[0, 0].legend()
     fig.autofmt_xdate()
     fig.tight_layout()
@@ -194,6 +216,8 @@ def main() -> int:
     ap.add_argument("--out-dir", type=Path, default=RESULTS_DIR)
     ap.add_argument("--start", default="2016-01-01", help="first day covered by the data (UTC)")
     ap.add_argument("--end", default="2017-01-01", help="day after the last day covered (UTC)")
+    ap.add_argument("--subreddit-counts-only", action="store_true",
+                    help="only refresh the per-subreddit columns of existing weekly/monthly stats CSVs")
     args = ap.parse_args()
     data_start = datetime.fromisoformat(args.start).replace(tzinfo=timezone.utc)
     data_end = datetime.fromisoformat(args.end).replace(tzinfo=timezone.utc)
@@ -204,6 +228,11 @@ def main() -> int:
     edges = pa.concat_tables(pq.read_table(f, columns=cols) for f in files)
     args.out_dir.mkdir(parents=True, exist_ok=True)
     print(f"{edges.num_rows:,} edges from {len(files)} files", flush=True)
+    if args.subreddit_counts_only:
+        for kind in ("week", "month"):
+            update_subreddit_counts(args.out_dir / f"{kind}ly_stats.csv", edges, kind)
+        print(f"updated subreddit columns in {time.perf_counter() - t0:.0f}s")
+        return 0
 
     outputs = {}
     for kind in ("week", "month"):
