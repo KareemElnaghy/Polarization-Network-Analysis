@@ -14,6 +14,7 @@ results/
 *.ckpt
 !data/
 !data/*/
+data/*/*
 !data/*/.gitkeep
 !results/
 !results/.gitkeep
