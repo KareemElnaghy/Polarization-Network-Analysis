@@ -137,6 +137,7 @@ class JobRun:
         self.session_start_work = 0.0
         self.samples: deque = deque()          # (time, rows) for the rolling rate
         self.peak_gb = 0.0
+        self.mem_kills = 0
         self.eta_seconds: float | None = None
         self.governor = Governor(self.guard, data_path(self.cfg, "results").parent, self.runs, self.run_dir)
         self._stop_hb = threading.Event()
@@ -359,6 +360,14 @@ class JobRun:
                     err = read_json(self.run_dir / "errors" / f"{key}.txt", None)
                     self.last_error = f"{key}: {why}"
                     self.log(f"FAILED {key} attempt {attempts[uid]}: {why}")
+                    if info.get("killed_memory"):  # memory-killed twice: halve this job's workers
+                        self.mem_kills += 1
+                        if self.mem_kills % 2 == 0 and self.workers > 1:
+                            self.workers = max(1, self.workers // 2)
+                            note = f"- {datetime.now():%Y-%m-%d %H:%M} memory-killed {self.mem_kills} times: workers halved to {self.workers}\n"
+                            with open(self.run_dir / "NOTES.md", "a", encoding="utf-8") as fh:
+                                fh.write(note)
+                            self.log(note.strip())
                     if attempts[uid] >= self.fw["max_attempts"]:
                         with self.lock:
                             self.failed[key] = why
