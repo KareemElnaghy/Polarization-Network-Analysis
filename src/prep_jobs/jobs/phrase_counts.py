@@ -495,18 +495,14 @@ def after_unit(cfg, phase_name, unit, ck):
 # ------------------------------------------------------------------ finalise
 def _load_month(cfg, kind):
     def load(month):
-        t = pq.read_table(data_path(cfg, "phrase_counts") / f"month={month}" / f"{kind}.parquet")
-        for c in ("subreddit", "author"):
-            t = t.set_column(t.schema.get_field_index(c), c, pc.cast(t[c], pa.string()))
-        return t
+        return pq.read_table(data_path(cfg, "phrase_counts") / f"month={month}" / f"{kind}.parquet")
     return load
 
 
 def _save_month(cfg, kind):
+    """Write the folded month next to the original; ``finalise`` swaps them in once everything succeeded."""
     def save(month, table):
-        for c in ("subreddit", "author"):
-            table = table.set_column(table.schema.get_field_index(c), c, pc.dictionary_encode(table[c]))
-        write_parquet(table, data_path(cfg, "phrase_counts") / f"month={month}" / f"{kind}.parquet")
+        write_parquet(table, data_path(cfg, "phrase_counts") / f"month={month}" / f"{kind}.folded.parquet")
     return save
 
 
@@ -517,6 +513,10 @@ def finalise(ctx, unit):
                                       ["week_start", "subreddit", "author", "phrase_id"], ["count"])
     rows_totals = fold_boundary_weeks(months, _load_month(cfg, "totals"), _save_month(cfg, "totals"),
                                       ["week_start", "subreddit", "author"], ["m_vocab", "n_comments"])
+    for m in months:  # swap in the folded files; before this point the originals are untouched
+        for kind in ("counts", "totals"):
+            d = data_path(cfg, "phrase_counts") / f"month={m}"
+            (d / f"{kind}.folded.parquet").replace(d / f"{kind}.parquet")
     # vocabulary text
     strings: dict[int, str] = {}
     for f in sorted((work_dir(cfg) / "pass2_strings").glob("*.json")):

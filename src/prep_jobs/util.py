@@ -107,6 +107,14 @@ def sum_by_keys(table: pa.Table, keys: list[str], sums: list[str]) -> pa.Table:
     return agg
 
 
+def _plain(t: pa.Table) -> pa.Table:
+    """Dictionary columns as plain strings (group_by keys), for a small table only."""
+    for i, f in enumerate(t.schema):
+        if pa.types.is_dictionary(f.type):
+            t = t.set_column(i, f.name, pc.cast(t[f.name], f.type.value_type))
+    return t
+
+
 def fold_boundary_weeks(
     months: list[str],
     load: Callable[[str], pa.Table],
@@ -120,7 +128,10 @@ def fold_boundary_weeks(
     ``load(month)`` returns that month's table with ``keys`` and ``sums`` columns, where each week's
     rows hold only that month's days. Rows of month M whose ``week_start`` is before M's first day belong
     to a week that began in M-1: they are summed into M-1's rows for the same keys and removed from M.
-    The first month keeps its leading partial week. Returns the rows saved per month.
+    The first month keeps its leading partial week. Only the boundary weeks are regrouped (as plain
+    strings), so dictionary-encoded columns of the rest stay compact. ``save`` is called once per month;
+    to be crash-safe it should write somewhere temporary and let the caller swap the results in.
+    Returns the rows saved per month.
     """
     written: dict[str, int] = {}
     carry: pa.Table | None = None  # rows of the later month that belong to the month being processed
@@ -134,10 +145,22 @@ def fold_boundary_weeks(
         else:
             outgoing, own = None, cur
         if carry is not None and carry.num_rows:
-            merged = sum_by_keys(pa.concat_tables([own, carry.select(own.column_names).cast(own.schema)]), keys, sums)
+            touched = pc.unique(carry[week_column])
+            is_b = pc.is_in(own[week_column], touched)
+            rest = own.filter(pc.invert(is_b))
+            both = pa.concat_tables([_plain(own.filter(is_b)), _plain(carry.select(own.column_names))])
+            merged_b = sum_by_keys(both, keys, sums)
+            for i, f in enumerate(rest.schema):  # back to the stored column types
+                if pa.types.is_dictionary(f.type):
+                    merged_b = merged_b.set_column(i, f.name, pc.dictionary_encode(merged_b[f.name]))
+                elif merged_b.schema.field(i).type != f.type:
+                    merged_b = merged_b.set_column(i, f.name, pc.cast(merged_b[f.name], f.type))
+            merged = pa.concat_tables([rest, merged_b]).unify_dictionaries()
+            del both, merged_b, rest
         else:
             merged = own
         save(month, merged)
         written[month] = merged.num_rows
+        del cur, own, merged
         carry = outgoing
     return written
