@@ -83,3 +83,13 @@ gt1_robust:
   event_perm: 10000
   events: ["Iowa", "New Hampshire", "California primary", "Conventions start", "Conventions end", "First debate",
            "Access Hollywood tape", "Comey letter", "Election Day"]
+
+# Transfer design for GT#2 (job gt2_transfer)
+gt2_transfer:
+  n_folds: 5
+  fit_workers: 2
+  min_train_phrases: 20     # a training user needs this many supporter-sub phrases
+  logit_grid: [0.3, 3.0, 30.0]
+  logit_cv_users: 20000
+  n_perm: 100
+  n_boot: 100
