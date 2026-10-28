@@ -59,15 +59,24 @@ def keep_phrase_mask(cfg: dict, exclude_tokens: list[str]) -> tuple[np.ndarray, 
     return keep, int(drop.sum())
 
 
-def phrase_triplets(table: pa.Table, subs: list[str], author_index) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """``(author_idx, phrase_id, count)`` for rows of ``table`` in ``subs`` (dictionary columns, no string casts)."""
-    df = table.select(["subreddit", "author", "phrase_id", "count"]).to_pandas()
-    ok_sub = df["subreddit"].cat.categories.isin(subs)[df["subreddit"].cat.codes.to_numpy()]
-    cats = df["author"].cat.categories
-    to_idx = np.fromiter((author_index.index.get(a, -1) for a in cats), dtype=np.int64, count=len(cats))
-    a = to_idx[df["author"].cat.codes.to_numpy()]
-    sel = ok_sub & (a >= 0)
-    return a[sel], df["phrase_id"].to_numpy()[sel], df["count"].to_numpy()[sel]
+class PhraseWeek:
+    """One week's phrase counts decoded once: global author ids, phrase ids, counts and subreddit codes."""
+
+    def __init__(self, table: pa.Table, author_index) -> None:
+        df = table.select(["subreddit", "author", "phrase_id", "count"]).to_pandas()
+        self.sub_categories = df["subreddit"].cat.categories
+        self.sub_codes = df["subreddit"].cat.codes.to_numpy()
+        cats = df["author"].cat.categories
+        to_idx = np.fromiter((author_index.index.get(a, -1) for a in cats), dtype=np.int64, count=len(cats))
+        self.author = to_idx[df["author"].cat.codes.to_numpy()]
+        self.phrase = df["phrase_id"].to_numpy()
+        self.count = df["count"].to_numpy()
+        del df
+
+    def rows(self, subs: list[str]) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """``(author_idx, phrase_id, count)`` for rows in ``subs`` by authors known to the author index."""
+        ok = self.sub_categories.isin(subs)[self.sub_codes] & (self.author >= 0)
+        return self.author[ok], self.phrase[ok], self.count[ok]
 
 
 # ------------------------------------------------------------------ GT#1
