@@ -66,3 +66,20 @@ events:
   "Comey letter": "2016-10-28"
   "Election Day": "2016-11-08"
 null_check_tolerance: 0.02
+
+# Robustness of GT#1 (job gt1_robustness)
+gt1_robust:
+  n_perm: 200            # null for the main excess and the stratified null
+  n_perm_small: 100      # sub-venues, threads >= N per side, gold, no-top-users
+  n_boot: 100            # thread resamples for the bands
+  boot_perm: 10          # shuffles per resample for the null mean
+  n_splits: 20
+  split_perm: 30
+  flip_frac: 0.2
+  flips: 5
+  flip_perm: 30
+  min_side_thread: 10
+  top_frac: 0.01
+  event_perm: 10000
+  events: ["Iowa", "New Hampshire", "California primary", "Conventions start", "Conventions end", "First debate",
+           "Access Hollywood tape", "Comey letter", "Election Day"]
