@@ -66,3 +66,12 @@ if __name__ == "__main__":
     pd.set_option("display.width", 250, "display.max_columns", 50)
     print(t.round(3).T.to_string())
     print(baseline())
+
+
+def md(df: pd.DataFrame, nd: int = 3) -> str:
+    df = df.reset_index()
+    cols = list(df.columns)
+    out = ["| " + " | ".join(map(str, cols)) + " |", "|" + "---|" * len(cols)]
+    for _, r in df.iterrows():
+        out.append("| " + " | ".join(f"{v:.{nd}f}" if isinstance(v, float) else str(v) for v in r) + " |")
+    return "\n".join(out)

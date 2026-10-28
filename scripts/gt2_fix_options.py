@@ -192,7 +192,7 @@ def cmd_run(stage, variants, weeks_arg, sources, workers=6):
             r = json.loads(line)
             done.add((r["variant"], r["label_set"], r["source"], r["week_start"]))
     tasks = [(stage, v, ls, src, w) for src in sources.split(",") for v in variants.split(",") for ls in ("main", "gold")
-             for w in sorted(weeks) if (v, ls, src, w) not in done]
+             for w in sorted(weeks) if (v, ls, src, w) not in done and (ls == "main" or src == "full")]
     print(f"{len(tasks)} tasks, {workers} workers", flush=True)
     t0 = time.time()
     with Pool(workers) as pool, open(out, "a") as fh:
