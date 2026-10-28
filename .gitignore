@@ -25,3 +25,6 @@ results/*
 
 # Notebooks
 .ipynb_checkpoints/
+
+# Background job state (checkpoints, logs, snapshots)
+runs/

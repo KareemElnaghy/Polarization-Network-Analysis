@@ -30,13 +30,13 @@ import pyarrow.parquet as pq
 
 if __package__ in (None, ""):  # run as a script: make ``src`` importable
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from src.common.text_filters import REMOVED_TEXTS  # noqa: E402
 from src.dataset.windowing import assign_windows  # noqa: E402
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 COMMENTS_DIR = PROJECT_ROOT / "data" / "interim" / "comments"
 EDGES_DIR = PROJECT_ROOT / "data" / "interim" / "edges"
 
-REMOVED_TEXTS = ["[removed]", "[deleted]"]
 PARENT_NOT_IN_DATA = "parent_not_in_data"  # posted before the first parsed month
 SELF_REPLY = "self_reply"
 

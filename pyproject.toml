@@ -21,6 +21,7 @@ dependencies = [
     "tqdm>=4.66",
     "pyarrow>=14.0",
     "orjson>=3.9",
+    "psutil>=5.9",
 ]
 
 [tool.setuptools.packages.find]
