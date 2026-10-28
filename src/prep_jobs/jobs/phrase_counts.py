@@ -162,8 +162,11 @@ def sum_duplicates(keys: np.ndarray, counts: np.ndarray) -> tuple[np.ndarray, np
 class RawComments:
     """Comments of one month that pass the scope filters and the shared exclusions."""
 
-    def __init__(self, cfg, jc, month, subs: list[str], authors: list[str]):
+    def __init__(self, cfg, jc, month, subs: list[str], authors: list[str], window: tuple[int, int] | None = None,
+                 with_link: bool = False):
+        """``window`` = (start, end) epoch seconds to keep instead of the whole month; ``with_link`` also yields ``link_id``."""
         self.cfg, self.month = cfg, month
+        self.window, self.with_link = window, with_link
         self.subs = {s: i for i, s in enumerate(subs)}
         self.author_index = {a: i for i, a in enumerate(authors)}
         self.privacy = re.compile(cfg["text_filters"]["privacy_overwrite_regex"])
@@ -172,7 +175,7 @@ class RawComments:
         self.stats: Counter = Counter()
 
     def __iter__(self):
-        lo, hi = (int(d.timestamp()) for d in month_bounds(self.month))
+        lo, hi = self.window or tuple(int(d.timestamp()) for d in month_bounds(self.month))
         st = self.stats
         with bz2.open(data_path(self.cfg, "raw") / f"comments_{self.month}.bz2", "rb") as fh:
             for line in fh:
@@ -199,7 +202,10 @@ class RawComments:
                     st["distinguished"] += 1
                     continue
                 st["counted"] += 1
-                yield a, sub, ts, c["body_cleaned"]
+                if self.with_link:
+                    yield a, sub, ts, c["body_cleaned"], c["link_id"]
+                else:
+                    yield a, sub, ts, c["body_cleaned"]
 
 
 def weight_total(cfg, jc) -> int:

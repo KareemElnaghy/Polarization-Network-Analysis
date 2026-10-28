@@ -52,6 +52,7 @@ samples_max_workers_before_measured: 2
 
 variants:
   above_median_n: true
+  user_caps: [100]              # addition to the spec: cap each user's in-vocabulary phrases (GT#2 only)
 
 events:
   Iowa: "2016-02-01"

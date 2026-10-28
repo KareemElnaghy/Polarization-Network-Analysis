@@ -106,14 +106,21 @@ def gt1_cell(tu: pd.DataFrame, subs: list[str], side_map: dict[str, str], heavy:
 # ------------------------------------------------------------------ GT#2
 def gt2_cell(author_idx: np.ndarray, phrase_id: np.ndarray, count: np.ndarray, side_vec: np.ndarray,
              keep_phrase: np.ndarray | None, heavy_vec: np.ndarray | None, n_phrases: int, min_phrases: int,
-             n_perm: int, n_boot: int, seed: int, min_users: int) -> dict:
-    """Leave-out estimator for one cell from ``(author, phrase, count)`` triplets."""
+             n_perm: int, n_boot: int, seed: int, min_users: int, cap: float | None = None) -> dict:
+    """Leave-out estimator for one cell from ``(author, phrase, count)`` triplets.
+
+    ``cap`` (variant only, not used by the main runs): scale each user's counts down so that nobody contributes
+    more than ``cap`` in-vocabulary phrases; very active users otherwise dominate the pooled frequencies.
+    """
     sel = side_vec[author_idx] >= 0
     if keep_phrase is not None:
         sel &= keep_phrase[phrase_id]
     if heavy_vec is not None:
         sel &= ~heavy_vec[author_idx]
     a, p, c = author_idx[sel], phrase_id[sel], count[sel].astype(float)
+    if cap:
+        totals = np.bincount(a, weights=c, minlength=len(side_vec))
+        c = c * np.minimum(1.0, cap / np.maximum(totals[a], 1.0))
     users, inv = np.unique(a, return_inverse=True)
     C = sparse.csr_matrix((c, (inv, p)), shape=(len(users), n_phrases))
     enough = np.asarray(C.sum(axis=1)).ravel() >= min_phrases
