@@ -1,0 +1,67 @@
+# Settings for the ground-truth runs (docs/gt_runs_spec.md). Paths are relative to the project root.
+# The labelling rule itself is in config/labels.yaml.
+
+paths:
+  labels: data/processed/labels
+  camp_recovery: data/processed/camp_recovery
+  results: results/ground_truth
+  tmp: runs/gt_tmp
+
+# Label sets that run. main always runs; gold runs in GT1 and GT2 on the full week only.
+# broad and strict stay defined in labels.yaml and run only if listed here.
+label_sets_extra: []
+gold_in: [gt1, gt2_full]
+
+venues:
+  shared: [politics, PoliticalDiscussion]
+special_venues: [AskTrumpSupporters, enoughsandersspam, RepublicansForSanders, AskDemocrats, AskThe_Donald]
+extra_venues: []                # e.g. [The_Donald, SandersForPresident, hillaryclinton]; each is a one-sub venue
+
+heavy_poster_threshold: 500     # replies sent in a week (same value as Job C)
+sample_rates: [0.01, 0.05, 0.20]
+seed: 0
+
+gt1:
+  n_perm: 200
+
+gt2:
+  n_perm: 100
+  n_boot: 100                   # main / shared only
+  min_phrases: 20               # in-vocabulary phrases a user needs that week
+  # body_cleaned splits contractions into fragments; phrases with such a word are dropped (T2, T3, T4).
+  exclude_tokens: ["n't", "'s", "'re", "'ve", "'ll", "'m", "'d"]
+  vocab_key_bits: 44
+
+samples:                        # T3
+  batch_comments: 20000
+  bootstrap_shared: true
+
+within_camp:
+  count_version: score_ge_1
+  side_for_sanders: rep         # orientation is arbitrary: both ground truths are symmetric in the two groups
+
+memory:
+  ram_budget_fraction: 0.6      # workers x measured peak must stay below this share of free RAM
+  default_peak_gb: 4.0          # only until a unit has been measured (runs/gt_measure.json)
+
+# Workers per job; filled in from the measurement by scripts/plan_gt_jobs.py (null = use the plan).
+workers: {labels: 1, gt1_dissimilarity: null, gt2_leave_out_full: null, gt2_leave_out_samples: null,
+          gt_within_camp: null, gt_variants: null, gt_summary: 1}
+split: {gt1_dissimilarity: 0.25, gt2_leave_out_full: 0.40, gt2_leave_out_samples: 0.25, gt_within_camp: 0.10}
+samples_max_workers_before_measured: 2
+
+variants:
+  above_median_n: true
+
+events:
+  Iowa: "2016-02-01"
+  "New Hampshire": "2016-02-09"
+  "California primary": "2016-06-07"
+  "Sanders endorses Clinton": "2016-07-12"
+  "Conventions start": "2016-07-18"
+  "Conventions end": "2016-07-28"
+  "First debate": "2016-09-26"
+  "Access Hollywood tape": "2016-10-07"
+  "Comey letter": "2016-10-28"
+  "Election Day": "2016-11-08"
+null_check_tolerance: 0.02

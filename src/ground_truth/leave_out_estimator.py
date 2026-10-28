@@ -83,3 +83,7 @@ def leave_out_estimator(counts, labels, n_perm: int = 200, n_boot: int = 200, se
         out["boot_lo"], out["boot_hi"] = (float(np.percentile(boots, 2.5)), float(np.percentile(boots, 97.5)))
         out["boot_sd"] = float(boots.std(ddof=1))
     return out
+
+
+# Name used in docs/gt_runs_spec.md
+leave_out_polarization = leave_out_estimator

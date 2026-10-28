@@ -137,6 +137,21 @@ jobs:
       - {version: score_ge_2, min_comments: 10, share: 0.75}
     venue_subs: ["politics", "PoliticalDiscussion"]
     min_users: 50
+  # Ground-truth runs (settings in config/gt_runs.yaml and config/labels.yaml)
+  labels:
+    depends_on: []
+  gt1_dissimilarity:
+    depends_on: [labels]
+  gt2_leave_out_full:
+    depends_on: [labels]
+  gt2_leave_out_samples:
+    depends_on: [labels, gt2_leave_out_full]
+  gt_within_camp:
+    depends_on: [labels, gt2_leave_out_full]
+  gt_variants:
+    depends_on: [gt1_dissimilarity, gt2_leave_out_full]
+  gt_summary:
+    depends_on: [gt1_dissimilarity, gt2_leave_out_full, gt2_leave_out_samples, gt_within_camp, gt_variants]
   dummy:
     depends_on: []
     seconds: 90

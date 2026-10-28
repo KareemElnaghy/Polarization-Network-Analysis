@@ -1,0 +1,10 @@
+# Labelling rule for the ground truths. Created from the template in docs/gt_runs_spec.md.
+# count_version names must match the ones Job G actually wrote (score_ge_1 -> n_ge1, score_ge_2 -> n_ge2,
+# all -> n_all, above_sub_median -> n_above_median, weighted -> w_log in label_versions/user_counts.parquet).
+main:   {count_version: score_ge_1, min_comments: 10, share: 0.75}
+broad:  {count_version: score_ge_1, min_comments: 5,  share: 0.75}
+strict: {count_version: score_ge_2, min_comments: 10, share: 0.80}
+gold:   {source: vote_declarations, exclude: [johnson, stein, conflicting]}
+exclude_heavy_posters: true     # authors who sent > 500 replies in a week
+use_additions: false            # Conservative, HillaryForPrison, EnoughTrumpSpam; only if Job G counted them
+min_users_per_side: 50

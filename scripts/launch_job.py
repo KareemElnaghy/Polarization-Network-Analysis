@@ -92,8 +92,7 @@ def main() -> int:
     shutil.rmtree(snapshot, ignore_errors=True)
     ignore = shutil.ignore_patterns("__pycache__", "*.pyc")
     shutil.copytree(ROOT / "src", snapshot / "src", ignore=ignore)
-    (snapshot / "config").mkdir(parents=True, exist_ok=True)
-    shutil.copy2(ROOT / "config" / "prep_jobs.yaml", snapshot / "config" / "prep_jobs.yaml")
+    shutil.copytree(ROOT / "config", snapshot / "config")  # prep_jobs.yaml, gt_runs.yaml, labels.yaml, ...
 
     deadline_hours = args.deadline_hours or cfg["framework"]["deadline_hours"]
     cmd = [sys.executable, "-m", "src.prep_jobs.runner", args.job, "--workers", str(workers),
