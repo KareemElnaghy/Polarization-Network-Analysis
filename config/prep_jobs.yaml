@@ -151,7 +151,7 @@ jobs:
   gt_variants:
     depends_on: [gt1_dissimilarity, gt2_leave_out_full]
   gt_summary:
-    depends_on: [gt1_dissimilarity, gt2_leave_out_full, gt2_leave_out_samples, gt_within_camp, gt_variants]
+    depends_on: [gt1_dissimilarity, gt2_leave_out_full, gt2_leave_out_samples, gt_within_camp, gt_variants, gt2_transfer]
   gt1_robustness:
     depends_on: [labels, gt1_dissimilarity]
   gt2_transfer:
