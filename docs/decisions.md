@@ -33,3 +33,16 @@ Decided 2026-10-21. Code: `src/dataset/build_edges.py`, `windowing.py`, `graph_s
 # Open questions
 
 Placeholder: record unresolved methodological and implementation questions.
+
+# Decisions, Oct 28
+
+- **Windows:** weekly, Monday start, all of 2016 (the partial weeks 2015-12-28 and 2016-12-26 are kept and marked); monthly windows only as a check.
+- **Minimum activity k = 3**, computed once on the cleaned full week (sent + received >= 3; an edge is kept if both ends are kept), before sampling. It is not re-applied after sampling.
+- **Heavy posters:** authors who send more than 500 replies in a week are excluded together with the replies sent to them (replies to a bot or troll are mostly people pointing that out). Authors who only receive many replies are kept.
+- **Row-level cleaning:** `[removed]`/`[deleted]` and privacy-script edges are skipped; HTML symbols are unescaped (originals kept); short replies are kept. The privacy-script detector is new (`src/common/text_filters.py`); `build_edges` only flagged removed/deleted text.
+- **Sampling:** whole threads, stratified by size (and by subreddit), at a fixed **rate** per week (1%, 5%, 20%) rather than a fixed budget, so activity trends survive. Random rounding keeps the total unbiased.
+- **Special subreddits** (`enoughsandersspam`, `RepublicansForSanders`, `AskTrumpSupporters`, `AskDemocrats`, `AskThe_Donald`) stay in the data and in measurement but are not used for labelling.
+- **Ground truth #1** = thread dissimilarity index with a shuffled-label null (`src/ground_truth/dissimilarity.py`). **Ground truth #2** = the leave-out estimator with a shuffled-label null (about 0.5) and bootstrap bands (`src/ground_truth/leave_out_estimator.py`). Both run on all weeks; weeks with few labelled users are flagged, not dropped.
+- **Data and integration:** the data files live on a shared PC that Kareem has access to, so no transfer is needed. **Open:** who runs integration (expected to be Kareem, with Yasmina helping online if she can). Kareem makes no decisions; Yasmina has full authority and sends them to him.
+- **The labelling rule is still open.** Candidate: posting share in the 58 supporter-community subs, counted only on comments with score >= 1, at least 10 comments and 75% on one side. It labels 107,730 users and agrees with self-declarations about 80% of the time. Scores are a single reading about four weeks after posting, and the choice between the all / accepted / weighted versions barely changes labels. Thresholds are not locked, and the score cutoff (>= 1 vs >= 2 vs above the subreddit median) is also open; the `label_versions` job compares them.
+- **Background jobs** (`scripts/launch_job.py`, `config/prep_jobs.yaml`): detached, checkpointed, resumable, with a load guard; the parsed comment Parquet lacks `body_cleaned` and `distinguished`, so `phrase_counts` reads the raw dumps and a small `comment_flags` job supplies the moderator flags.
