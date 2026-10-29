@@ -1,0 +1,166 @@
+# Configuration for the prep jobs (src/prep_jobs). Paths are relative to the project root.
+# Every set, threshold, rate, seed and path used by the jobs lives here.
+
+paths:
+  comments: data/interim/comments
+  edges: data/interim/edges
+  raw: data/raw
+  user_profiles: data/processed/user_profiles
+  comment_flags: data/interim/comment_flags
+  phrase_counts: data/processed/phrase_counts
+  thread_user: data/processed/thread_user
+  edges_clean: data/processed/edges_clean
+  edges_sampled: data/processed/edges_sampled
+  within_camp: data/processed/within_camp
+  label_versions: data/processed/label_versions
+  graph_stats: results/graph_stats
+  results: results
+  runs: runs
+
+year: 2016
+months: ["2016-01", "2016-02", "2016-03", "2016-04", "2016-05", "2016-06",
+         "2016-07", "2016-08", "2016-09", "2016-10", "2016-11", "2016-12"]
+first_week: "2015-12-28"          # Monday of the first (partial) week
+seed: 42
+
+# Row-level exclusions shared by the jobs (src/common/text_filters.py).
+text_filters:
+  removed_texts: ["[removed]", "[deleted]"]
+  # Text written over a comment by a privacy script. Found by looking at the most repeated reply
+  # texts in the edge files (flags_report.txt): one script accounts for them.
+  privacy_overwrite_regex: "(?i)^this comment has been overwritten by an open source script"
+  exclude_distinguished: true
+
+framework:
+  deadline_hours: 9
+  heartbeat_seconds: 15
+  max_attempts: 3
+  backoff_seconds: 10
+  batch_rows: 250000
+  peak_gb_per_worker_default: 2.0   # measured: phrase_counts pass1 workers peak about 0.5 GB; used until a job has its own measurement
+  ram_headroom_fraction: 0.8
+  low_priority: true
+  prevent_sleep: true
+
+load_guard:
+  sample_seconds: 10
+  ram_throttle_percent: 85
+  ram_pause_percent: 92
+  ram_pause_seconds: 30
+  ram_resume_percent: 75
+  ram_restore_percent: 80           # below this a throttled job doubles its workers again
+  min_free_disk_gb: 25
+  min_free_disk_percent: 10
+  reserved_cores: 2
+  worker_rss_limit_gb: 5.0          # a unit above this flushes and halves its batch size
+  worker_rss_kill_factor: 1.6       # parent kills a unit above limit x factor and retries it smaller
+  resume_jitter_seconds: 15
+
+# Share of the available workers each job gets (minimum 1 each).
+allocation:
+  comment_flags: 0.0                # small prerequisite scan; runs with comment_flags_workers
+  phrase_counts: 0.45
+  clean_edges_and_sampling: 0.25
+  thread_user: 0.10
+  label_versions: 0.15
+  within_camp_setup: 0.05
+  label_coverage: 0.0               # waits for others; takes label_coverage_workers
+comment_flags_workers: 2
+label_coverage_workers: 2
+
+jobs:
+  comment_flags:
+    depends_on: []
+  phrase_counts:
+    depends_on: []
+    subreddits: all                 # "all", or a list. Fallback if output does not fit below.
+    fallback_subreddits: ["politics", "PoliticalDiscussion", "@party_tagged"]
+    vocab_size: 100000              # deadline cut 1: 50000
+    min_authors_per_phrase: 20
+    min_author_comments: 5          # deadline cut 2: 10
+    min_token_length: 2
+    token_regex: "^[a-z]+(?:'[a-z]+)*$"
+    url_fragment_tokens: ["http", "https", "www", "com", "org", "net", "html", "htm", "php",
+                          "jpg", "jpeg", "png", "gif", "amp", "gt", "lt"]
+    buckets: 32
+    chunk_comments: 400000
+    batch_comments: 20000
+    key_bits: 44
+    author_bits: 20
+    disk_fraction_limit: 0.70
+    validation_sample_comments: 1000
+    validation_top_phrases: 30
+  thread_user:
+    depends_on: [comment_flags]
+  clean_edges_and_sampling:
+    depends_on: [comment_flags]
+    heavy_poster_threshold: 500     # more than this many replies sent in a week
+    min_activity: 3                 # k, one pass
+    top_subreddits: 25
+    size_buckets: [1, 2, 4, 8, 16, 32, 100, 500]    # lower edges: 1, 2-3, 4-7, 8-15, 16-31, 32-99, 100-499, 500+
+    sampling:
+      rates: [0.01, 0.05, 0.20]     # deadline cut: drop 0.20 first
+    validation_tolerance: 0.005
+    realised_share_tolerance: 0.03
+  within_camp_setup:
+    depends_on: [comment_flags]
+    sanders_subs: ["SandersForPresident"]
+    clinton_subs: ["hillaryclinton"]
+    special_subs: ["enoughsandersspam", "RepublicansForSanders", "AskTrumpSupporters",
+                   "AskDemocrats", "AskThe_Donald"]
+    count_versions: ["all", "score_ge_1", "score_ge_2", "above_sub_median"]
+    primary_version: score_ge_1
+    min_comments: 5                 # not final
+    sanders_share_at_least: 0.75    # not final
+    clinton_share_at_most: 0.25     # not final
+    venue_subs: ["politics", "PoliticalDiscussion"]
+    calendar:
+      "Iowa caucus": "2016-02-01"
+      "New Hampshire": "2016-02-09"
+      "California primary": "2016-06-07"
+      "Sanders endorses Clinton": "2016-07-12"
+  label_versions:
+    depends_on: [comment_flags]
+    supporter_subs: null            # null = party-tagged subs minus supporter_exclude
+    supporter_exclude: ["enoughsandersspam", "RepublicansForSanders", "AskTrumpSupporters",
+                        "AskDemocrats", "AskThe_Donald"]
+    versions: ["all", "score_ge_1", "score_ge_2", "above_sub_median", "weighted"]
+    min_comments_grid: [5, 10, 20]
+    share_grid: [0.70, 0.75, 0.80]
+    default_min_comments: 10
+    default_share: 0.75
+  label_coverage:
+    # Also waits for label_versions: the labels come from its user_counts.parquet (assumption, see NOTES).
+    depends_on: [thread_user, clean_edges_and_sampling, label_versions]
+    label_specs:
+      - {version: score_ge_1, min_comments: 10, share: 0.75}
+      - {version: score_ge_2, min_comments: 10, share: 0.75}
+    venue_subs: ["politics", "PoliticalDiscussion"]
+    min_users: 50
+  # Ground-truth runs (settings in config/gt_runs.yaml and config/labels.yaml)
+  labels:
+    depends_on: []
+  gt1_dissimilarity:
+    depends_on: [labels]
+  gt2_leave_out_full:
+    depends_on: [labels]
+  gt2_leave_out_samples:
+    depends_on: [labels, gt2_leave_out_full]
+  gt_within_camp:
+    depends_on: [labels, gt2_leave_out_full]
+  gt_variants:
+    depends_on: [gt1_dissimilarity, gt2_leave_out_full]
+  gt_summary:
+    depends_on: [gt1_dissimilarity, gt2_leave_out_full, gt2_leave_out_samples, gt_within_camp, gt_variants, gt2_transfer]
+  gt1_robustness:
+    depends_on: [labels, gt1_dissimilarity]
+  gt2_transfer:
+    depends_on: [labels, gt2_leave_out_full]
+  gt1_drivers:
+    depends_on: [labels, gt1_dissimilarity]
+  gt1_panel:
+    depends_on: [labels, gt1_dissimilarity]
+  dummy:
+    depends_on: []
+    seconds: 90
+    units: 6
