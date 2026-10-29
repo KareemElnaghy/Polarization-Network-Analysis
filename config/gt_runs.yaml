@@ -93,3 +93,15 @@ gt2_transfer:
   logit_cv_users: 20000
   n_perm: 100
   n_boot: 100
+
+# Fixed-panel check for GT#1 (job gt1_panel)
+gt1_panel:
+  split_week: "2016-06-27"
+  min_weeks_a: 12
+  min_each_half: 5
+  n_perm: 100
+  n_perm_sample: 30        # per subsample draw of the balanced / reweighted variants
+  n_repeats: 20
+  n_boot: 200
+  boot_perm: 10
+  event_perm: 10000

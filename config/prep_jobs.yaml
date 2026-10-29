@@ -158,6 +158,8 @@ jobs:
     depends_on: [labels, gt2_leave_out_full]
   gt1_drivers:
     depends_on: [labels, gt1_dissimilarity]
+  gt1_panel:
+    depends_on: [labels, gt1_dissimilarity]
   dummy:
     depends_on: []
     seconds: 90
