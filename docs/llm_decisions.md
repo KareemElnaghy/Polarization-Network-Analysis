@@ -40,3 +40,4 @@ Memory budget: weights <= ~14-16 GB. Thinking must be off (D-M2); newer families
 | Gemma4 | `gemma4:26b` (MoE `26b-a4b`) | 16 GB | tight |
 
 Proposed robustness pair if both arrive (two different families, one newer each, under 9 GB): `qwen3.5:9b-q4_K_M` (or `qwen3:8b`) and `gemma4:12b` (or `gemma3:12b`). Not decided; D-M3 stays open.
+| D-T1 | 2026-10-30 | Throughput, not model quality, is the binding constraint: at 0.77 edges/s the 5% shared tier needs ~223 h. Run plan options are in the Phase 1 report; nothing is launched. | | Measured on llama3.1:8b, clean single-server baseline. | open |
