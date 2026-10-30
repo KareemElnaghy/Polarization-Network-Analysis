@@ -8,3 +8,4 @@
 - **Truncation** of long comments to 1200 characters (rate reported per run).
 - **Sign-inference quality** on Reddit is measured only by a 150-edge pilot labelled by two people.
 - **Pilot accuracy is moderate** (qwen3.5:9b: held-out accuracy 0.71, kappa 0.44, n=75; combined 0.72). The pilot labels are a consensus set without an inter-rater kappa, with only 12 neutral items.
+- **P_B is low and density-dependent in sparse graphs.** Synthetic validation (mean degree 2.6-3.2 as in the sampled shared-venue graphs) gives P_B of only 0.02-0.06 at moderate polarization; mild polarization (alignment <= 0.4) is not detectable; the heuristic is verified against the exact optimum only up to ~100 nodes.
