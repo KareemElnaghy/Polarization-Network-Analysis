@@ -4,7 +4,7 @@ base_url: http://localhost:11434
 model: llama3.1:8b          # primary chosen from pilot + throughput only, never from GT (docs/llm_decisions.md D-M1)
 temperature: 0.0
 seed: 0
-prompt_version: v1
+prompt_version: v2
 max_chars: {parent: 1200, body: 1200}   # truncation; rate is logged
 num_predict: 60
 parallel: 4                 # client threads == OLLAMA_NUM_PARALLEL; measured in the throughput benchmark

@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 import requests
 
-from .schema import AGREEMENT, SCHEMA, SYSTEM_PROMPT, user_message
+from .schema import AGREEMENT, SCHEMA, system_prompt, user_message
 
 
 class InvalidOutput(Exception):
@@ -76,7 +76,7 @@ class OllamaBackend:
     def _chat(self, parent: str, body: str, temperature: float, seed: int, logprobs: bool) -> dict:
         c = self.cfg
         req = {"model": c["model"], "stream": False, "format": SCHEMA, "think": False,  # thinking off (D-M2)
-               "messages": [{"role": "system", "content": SYSTEM_PROMPT},
+               "messages": [{"role": "system", "content": system_prompt(c["prompt_version"])},
                             {"role": "user", "content": user_message(parent, body, c["max_chars"])}],
                "options": {"temperature": temperature, "seed": seed, "num_predict": c["num_predict"]}}
         if logprobs:
