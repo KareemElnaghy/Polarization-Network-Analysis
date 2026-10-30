@@ -18,3 +18,25 @@ Every methodological choice, at the moment it is made. Status: `open` (revisit),
 | D-E1 | 2026-10-30 | Extraction store is SQLite, keyed by (pair_hash, model, quantization, prompt_version, temperature, seed) rather than comment_id; edges map to rows through the pair hash of the visible (truncated) text. Identical pairs share one call. | Key by comment_id | Dedup is free; comment-level results are a join. Append-only (INSERT OR IGNORE), exported to Parquet shards with a sha256 manifest. | frozen |
 | D-E2 | 2026-10-30 | Attribute set: agreement, emotional_charge, hostility, personal_attack. `TODO(verify)` against Chowdhury et al. (stance, affective tone, agreement) and justify deviations. | | | open |
 | D-R1 | 2026-10-30 | Environment: `.venv` (Python 3.14.2), `uv` not installed; `pytest` collects 85 existing tests cleanly. Imports use the `src.` prefix like existing tests. `.gitignore` gets `!results/llm/` so small result files can be committed. | | | final |
+| D-M4 | 2026-10-30 | **Fallback rule (pre-registered, git tag `fallback-rule-v1`).** If fewer than two candidate models are *available* by **2026-11-02** (available = pulled in Ollama and returning >= 99% valid JSON on the pilot slice), `llama3.1:8b` is the primary model (literature anchor to Chowdhury et al., who used Llama-3.1-70B). Any other candidates that arrive later become robustness runs. Otherwise D-M1 applies (pilot agreement with consensus, JSON validity, throughput). Neither branch may use agreement with GT. | Wait indefinitely; pick by GT | Downloads on this network are about 0.3 MB/s; a fixed date stops the choice drifting. | frozen |
+| D-M5 | 2026-10-30 | Download queue: only `llama3.1:8b` is downloading; `qwen3:8b` and `gemma3:12b` pulls paused (not started). Nothing pulled beyond that without approval. | | Network bandwidth. | open |
+
+### Candidate tag survey (ollama.com/library/<model>/tags, 2026-10-30; sizes are Ollama's, Q4_K_M unless noted)
+Memory budget: weights <= ~14-16 GB. Thinking must be off (D-M2); newer families may think by default, so each needs a `think:false` smoke test before use.
+
+| Family | Tag | Size | Note |
+|---|---|---|---|
+| Llama | `llama3.1:8b` | 4.9 GB | primary anchor; downloading |
+| Qwen3 | `qwen3:8b` | 5.2 GB | hybrid thinking model; `think:false` |
+| Qwen3 | `qwen3:14b` | 9.3 GB | same |
+| Qwen3 | `qwen3:4b-instruct-2507-q4_K_M` | 2.5 GB | non-thinking instruct (cheapest Qwen option) |
+| Qwen3 | `qwen3:30b-a3b-instruct-2507-q4_K_M` | 19 GB | MoE, ~3B active; **over budget**, small-subsample reference only |
+| Qwen3.5 | `qwen3.5:9b-q4_K_M` (`qwen3.5:latest` is 6.6 GB) | 6.6 GB | newer; also `qwen3.5:4b` 3.3 GB, `qwen3.5:27b` 17 GB (tight) |
+| Qwen3.6 | `qwen3.6:27b` | 18 GB | no small tag listed (27b/35b-a3b only); over budget |
+| Gemma3 | `gemma3:12b` | 8.2 GB | |
+| Gemma3 | `gemma3:27b` | 17 GB | tight, subsample reference |
+| Gemma4 | `gemma4:12b` | 7.7 GB | newer |
+| Gemma4 | `gemma4:e4b-it-q4_K_M` | 6.6 GB | (`gemma4:latest` 6.6 GB) |
+| Gemma4 | `gemma4:26b` (MoE `26b-a4b`) | 16 GB | tight |
+
+Proposed robustness pair if both arrive (two different families, one newer each, under 9 GB): `qwen3.5:9b-q4_K_M` (or `qwen3:8b`) and `gemma4:12b` (or `gemma3:12b`). Not decided; D-M3 stays open.
