@@ -1,0 +1,11 @@
+# Pipeline B settings (Phase 3). Seeds are fixed; draws are chosen from the cost benchmark (scripts/llm/bench_frustration.py).
+sign_sources: [continuous_llm, binary_llm, sentiment, unsigned]
+primary_source: continuous_llm
+pair_aggregation: mean        # TODO(verify) vs Guo et al.; sum | mean | median supported by pandas
+neutral_policy: drop          # binary_llm
+min_edges: 40                 # pairs in the week's graph; below this the week is NaN (reason recorded)
+min_giant_nodes: 20
+restarts: 10
+R_null: {continuous_llm: 50, default: 20}
+R_rewire: {continuous_llm: 10, default: 0}
+seed: 0

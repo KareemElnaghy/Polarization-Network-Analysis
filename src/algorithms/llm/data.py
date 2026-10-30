@@ -12,3 +12,9 @@ def load_shared(rate: float, root: str = "data/processed/edges_sampled", keep_id
     t = t.rename(columns={"body_clean": "body", "parent_body_clean": "parent"})
     t = t[(t.body.str.strip() != "") & (t.parent.str.strip() != "")]
     return t[["comment_id", "link_id", "week", "parent", "body"]].reset_index(drop=True)
+
+
+def load_users(rate: float, root: str = "data/processed/edges_sampled") -> pd.DataFrame:
+    """comment_id -> (source, target) pseudonymised user ids. Used by Pipeline B only; never passed to the LLM."""
+    t = ds.dataset(f"{root}/rate={rate}", format="parquet", partitioning="hive").to_table(columns=["comment_id", "source", "target"])
+    return t.to_pandas()
