@@ -83,8 +83,8 @@ def frustration(W: sp.csr_matrix, restarts: int = 10, seed: int = 0, sa_sweeps: 
     best_obj, best_s = -np.inf, None
     ip, ix, dt = W.indptr.astype(np.int64), W.indices.astype(np.int64), W.data.astype(np.float64)
     scale = float(np.abs(dt).mean())
-    if sa_sweeps is None:  # fixed work budget of ~2e6 node-visits per restart: many sweeps on small graphs, 100 on big ones
-        sa_sweeps = int(min(5000, max(100, 2_000_000 // n)))
+    if sa_sweeps is None:  # 5000 sweeps up to 15k nodes (weak-signal graphs are not converged with fewer), then a ~7.5e7 node-visit budget, floor 1000
+        sa_sweeps = int(min(5000, max(1000, 75_000_000 // n)))
     for r, s0 in enumerate(starts):
         s = s0.copy()
         if sa_sweeps and r > 0:  # the spectral start (r == 0) is only polished; SA starts from random states

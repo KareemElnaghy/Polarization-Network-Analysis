@@ -9,3 +9,4 @@ restarts: 10
 R_null: {continuous_llm: 50, default: 20}
 R_rewire: {continuous_llm: 10, default: 0}
 seed: 0
+workers: 6                    # process pool for null draws (leave cores for the extraction run)

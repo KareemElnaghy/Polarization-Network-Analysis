@@ -67,15 +67,27 @@ def rewire(g: dict, rng, swaps_per_edge: int = 10) -> dict:
     return {**g, "u": u, "v": v}
 
 
-def normalised_frustration(g: dict, R: int, restarts: int, seed: int, R_rewire: int = 0) -> dict:
+def _task(a):
+    """One null draw (top-level so it can run in a process pool). kind: shuffle (weights given) or rewire (seeded in the worker)."""
+    kind, g, restarts, seed = a
+    if kind == "rewire":
+        g = rewire(g, np.random.default_rng(seed))
+    return _F(g, restarts, seed)[0]
+
+
+def _map(tasks, executor):
+    return list(executor.map(_task, tasks)) if executor is not None and len(tasks) > 1 else [_task(t) for t in tasks]
+
+
+def normalised_frustration(g: dict, R: int, restarts: int, seed: int, R_rewire: int = 0, executor=None) -> dict:
     """P_B = 1 - F_obs / F_null with F_null the mean frustration over R sign-shuffled copies, same heuristic.
     TODO(verify) the exact normalisation in Guo et al. P_B = 0 when F_null = 0 (no frustration possible, e.g. all-positive)."""
     rng = np.random.default_rng(seed)
     F_obs, s = _F(g, restarts, seed)
-    Fn = np.array([_F(sign_shuffle(g, rng), restarts, seed + 1 + r)[0] for r in range(R)])
+    Fn = np.array(_map([("shuffle", sign_shuffle(g, rng), restarts, seed + 1 + r) for r in range(R)], executor))
     out = {"F_obs": F_obs, "F_null_mean": Fn.mean() if R else np.nan, "F_null_sd": Fn.std() if R else np.nan,
            "A": float(np.abs(g["w"]).sum()), "P_B": (1 - F_obs / Fn.mean()) if R and Fn.mean() > 0 else 0.0}
     if R_rewire:
-        Fr = np.array([_F(rewire(g, rng), restarts, seed + 1000 + r)[0] for r in range(R_rewire)])
+        Fr = np.array(_map([("rewire", g, restarts, seed + 1000 + r) for r in range(R_rewire)], executor))
         out |= {"F_rewire_mean": Fr.mean(), "P_B_rewire": (1 - F_obs / Fr.mean()) if Fr.mean() > 0 else 0.0}
     return out | {"side": s}
