@@ -99,3 +99,22 @@ def test_run_folder_and_index(tmp_path):
     m = __import__("json").loads((d / "manifest.json").read_text())
     assert m["status"] == "done" and "out.csv" in m["outputs"] and m["git_sha"]
     assert d.name in (tmp_path / "res" / "INDEX.md").read_text()
+
+
+def test_label_tool_resume_back_skip(tmp_path):
+    import csv
+    from src.algorithms.llm import label_tool as lt
+    sheet, out = tmp_path / "s.csv", str(tmp_path / "labels_x.csv")
+    with open(sheet, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["pilot_id", "parent_comment", "reply", "label_agree_neutral_disagree"])
+        w.writerows([[f"P00{i}", "p", "r", ""] for i in range(4)])
+    shown = []
+    keys = iter("asdbnq")
+    lt.run(str(sheet), out, key=lambda: next(keys), display=lambda *a: shown.append(a))
+    # a: P0 agree -> pos1; s: skip P1 -> pos2; d: P2 disagree -> pos3; b: back -> pos2 (shows P2); n: relabel P2 neutral; q
+    assert lt.load_labels(out) == {"P000": "agree", "P002": "neutral"}
+    assert all("P00" not in str(x) for a in shown for x in a[3:5])  # only texts and progress shown, never ids
+    keys = iter("dn")  # resume: first unlabelled is P1, then P3 -> finished
+    lt.run(str(sheet), out, key=lambda: next(keys), display=lambda *a: None)
+    assert lt.load_labels(out) == {"P000": "agree", "P001": "disagree", "P002": "neutral", "P003": "neutral"}
