@@ -1,0 +1,11 @@
+# Pipeline A heuristic: edge score 0-10 = sum of component points, clipped to [0, 10]. 0 = constructive/agreeing, 10 = heated hostility.
+# TODO(verify): Chowdhury et al. 2026 heuristic; this is an additive reading of their description, not their exact table.
+version: A-rules-v1
+agreement: {agree: 0, neutral: 0, disagree: 1}
+emotional_charge: {low: 0, medium: 1, high: 2}
+hostility: {none: 0, mild: 3, strong: 6}
+personal_attack: {false: 0, true: 1}
+# variant A_hostility: hostility only, rescaled to 0-10
+hostility_only: {none: 0, mild: 5, strong: 10}
+high_threshold: 7        # share of interactions scoring >= this
+min_edges_per_week: 30   # weeks below this get low_n=True (still reported)

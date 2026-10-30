@@ -32,3 +32,4 @@ runs/
 # Small LLM results are tracked
 !results/llm/
 !results/llm/**
+logs_llm/

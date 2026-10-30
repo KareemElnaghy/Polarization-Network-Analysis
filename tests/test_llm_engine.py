@@ -118,3 +118,20 @@ def test_label_tool_resume_back_skip(tmp_path):
     keys = iter("dn")  # resume: first unlabelled is P1, then P3 -> finished
     lt.run(str(sheet), out, key=lambda: next(keys), display=lambda *a: None)
     assert lt.load_labels(out) == {"P000": "agree", "P001": "disagree", "P002": "neutral", "P003": "neutral"}
+
+
+def test_pipeline_a_rules_total_and_aggregate():
+    from src.algorithms.pipeline_a import aggregate as pa
+    rules = pa.load_rules()
+    combos = pa.all_combinations()
+    assert len(combos) == 54
+    scores = [pa.edge_score(c, rules) for c in combos]
+    assert all(isinstance(s, int) and 0 <= s <= 10 for s in scores) and min(scores) == 0 and max(scores) == 10
+    df = pd.DataFrame([
+        {"week": "w1", "agreement": "agree", "emotional_charge": "low", "hostility": "none", "personal_attack": False},        # 0
+        {"week": "w1", "agreement": "disagree", "emotional_charge": "high", "hostility": "strong", "personal_attack": True},   # 10
+        {"week": "w2", "agreement": "disagree", "emotional_charge": "medium", "hostility": "mild", "personal_attack": False},  # 5
+    ])
+    w = pa.aggregate_weekly(pa.score_edges(df, rules), rules).set_index("week")
+    assert w.loc["w1", "P_A"] == 5 and w.loc["w1", "share_high"] == 0.5 and w.loc["w1", "n"] == 2
+    assert w.loc["w2", "P_A"] == 5 and w.loc["w2", "A_disagree"] == 1 and w.loc["w1", "A_hostility"] == 5
