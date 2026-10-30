@@ -11,3 +11,4 @@
 - Pilot labels (Kareem, 150, from the Markdown sheet; old 14 terminal labels backed up, 13/14 identical). llama3.1:8b v1 prompt: acc 0.587, kappa 0.205 (single rater); errors = third-party negativity read as disagreement. Dev/held-out split fixed (75/75) before editing the prompt. Yasmina's labels still missing.
 - Prompt v2 on dev: acc 0.627 kappa 0.307 (v1 0.587/0.234). Agree-vs-disagree AUC ~0.75 either way. Tokens/edge 36->29.5 (+11% speed). Next: compare other model families on the same dev split before choosing primary (D-M1).
 - qwen3.5:9b-q4_K_M dev v2: acc 0.733 kappa 0.548 AUC 0.87 (llama 0.627/0.307/0.75). 0.81 edges/s. Stopped model afterwards to free memory.
+- Held-out (scored once, --final): qwen3.5:9b v2 acc 0.707 kappa 0.439. Primary frozen (D-M7); config updated. Held-out run speed 0.64 edges/s.

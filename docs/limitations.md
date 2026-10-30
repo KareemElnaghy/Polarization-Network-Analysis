@@ -7,3 +7,4 @@
 - **Samples are independent draws**, and the sample-matched GT shares sampling noise with the pipelines.
 - **Truncation** of long comments to 1200 characters (rate reported per run).
 - **Sign-inference quality** on Reddit is measured only by a 150-edge pilot labelled by two people.
+- **Pilot accuracy is moderate** (qwen3.5:9b: held-out accuracy 0.71, kappa 0.44, n=75; combined 0.72). The pilot labels are a consensus set without an inter-rater kappa, with only 12 neutral items.

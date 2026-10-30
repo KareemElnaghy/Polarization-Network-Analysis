@@ -1,6 +1,6 @@
 # Phase 1 report (interim): LLM engine and shared extraction pass
 
-**Status: gate reached for `llama3.1:8b` only.** Engine tested; logprob validation and a throughput baseline done; pilot kappa and model-vs-human agreement pending labels; qwen/gemma not pulled (D-M5).
+**Status: ready for gate approval.** Primary model chosen and frozen (D-M7): `qwen3.5:9b-q4_K_M`, prompt v2. See 'Final gate summary' at the end; the llama3.1:8b sections below are the earlier baseline.
 
 ## Built
 - `src/algorithms/llm/`: `schema.py` (static system prompt, JSON schema, `agreement` first), `backends.py` (`OllamaBackend` over HTTP with constrained decoding, `think:false`, logprobs; `MockBackend`), `store.py` (append-only SQLite, Parquet export with sha256 manifest), `extract.py` (dedup, cache skip, threaded, retry on invalid JSON, week interleaving), `data.py` (shared-venue loader), `provenance.py` (immutable run folders, `results/llm/INDEX.md`).
@@ -47,3 +47,29 @@ A second test (a separate server with `OLLAMA_NUM_PARALLEL=4`, clients 4 and 8) 
 3. Try an MLX backend on this Mac.
 4. 1% only on this machine (55 h), 5% on a rented GPU with vLLM.
 5. Process fewer weeks or a smaller share of the 5% tier.
+
+
+## Final gate summary
+
+**Pilot** (150 edges; labels = Kareem and Yasmina's agreed consensus, no inter-rater kappa; 83 disagree / 55 agree / 12 neutral; dev/held-out split fixed before any prompt edit):
+
+| Model | Prompt | Split | Accuracy | kappa | Agree-vs-disagree AUC |
+|---|---|---|---|---|---|
+| llama3.1:8b | v1 | all 150 | 0.587 | 0.205 | 0.76 (dev) |
+| llama3.1:8b | v2 | dev 75 | 0.627 | 0.307 | 0.75 |
+| qwen3.5:9b-q4_K_M | v2 | dev 75 | 0.733 | 0.548 | 0.87 |
+| **qwen3.5:9b-q4_K_M** | **v2** | **held-out 75 (once)** | **0.707** | **0.439** | n/a |
+
+Held-out confusion (rows human, columns model): agree 16/10/2 (agree/disagree/neutral); disagree 7/35/1; neutral 0/2/2. Neutral is rare (12 of 150) so its accuracy is poorly measured. gemma3:12b and qwen3:8b were not tested (D-M3 open; planned as robustness models).
+
+**Probability method:** token logprobs of the first `agreement` value token under constrained decoding, normalised over three labels (D-P1). Validated on llama (argmax = greedy 100%; Spearman 0.54-0.73 vs 10 samples). qwen3.5:9b returns logprobs for 100% of edges with mean top probability 0.73. Not separately validated against k-samples for qwen; do that when the larger machine is available.
+
+**Throughput (qwen3.5:9b, one server, one stream):** 0.64-0.81 edges/s, 23.6 output tokens per edge, 100% GPU, 4.8 GB loaded. Unique shared-venue pairs: 1% 152k, 5% 617k, 20% 2.73M. Projected hours: 1% = 52-66 h; 5% = 210-270 h; 20% = 940-1200 h. Client parallelism did not help on the default server (llama test). 5% and 20% are out of reach on this Mac; they belong to the larger-hardware milestone.
+
+**Proposed run plan (needs your approval; nothing is running):**
+1. **Tier 0 (plumbing, about 5-6 h):** the 1% shared sample, whole threads in a fixed random order (seed 0), taking threads week by week until about 230 edges per week (about 12k edges). Threads stay intact so signed graphs keep their structure. Compared only with the full-week GT (the Yasmina 1% GT covers all 1% threads, not this subset), and labelled weak.
+2. **Extend in place:** more threads from the same ordering fill up to the full 1% tier (52-66 h) without redoing anything, because the store is keyed by text pair.
+3. Then, on the faster machine, the 5% tier and the robustness models.
+Detached, resumable, `caffeinate`, status file readable, low priority. I will not start without your approval.
+
+**Limitations to log:** no inter-rater kappa; neutral class is rare; model is mid-accuracy (about 0.72 on the pilot), so downstream signs are noisy; single primary model; llama baseline and qwen differ in more than size (family and generation).

@@ -1,7 +1,7 @@
 # LLM engine settings (Phase 1). Every value that affects outputs is part of the cache key or logged in the manifest.
 backend: ollama
 base_url: http://localhost:11434
-model: llama3.1:8b          # primary chosen from pilot + throughput only, never from GT (docs/llm_decisions.md D-M1)
+model: qwen3.5:9b-q4_K_M   # primary (D-M6); chosen from pilot dev split + throughput, never from GT
 temperature: 0.0
 seed: 0
 prompt_version: v2
