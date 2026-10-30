@@ -14,13 +14,48 @@ P = Path("data/llm/pilot")
 FULL = {"a": "agree", "agree": "agree", "n": "neutral", "neutral": "neutral", "d": "disagree", "disagree": "disagree"}
 
 ap = argparse.ArgumentParser()
-ap.add_argument("mode", choices=["make", "read"])
+ap.add_argument("mode", choices=["make", "read", "make-md", "read-md"])
 ap.add_argument("file", nargs="?")
 ap.add_argument("--rater")
 ap.add_argument("--force", action="store_true")
 a = ap.parse_args()
 
-if a.mode == "make":
+import re
+
+
+def quote(t):
+    return "\n".join("> " + l for l in t.splitlines()) or ">"
+
+
+if a.mode == "make-md":
+    rows = list(csv.DictReader(open(P / "pilot_sheet_blank.csv", newline="")))
+    out = ["# Pilot labelling sheet\n",
+           "Type agree, neutral or disagree (or a / n / d) after **Label:** for each item. Question: what is the REPLY's stance "
+           "toward the position taken in the PARENT comment? Tone is not stance. Judge only the text shown. Label independently. "
+           "See docs/pilot_rubric.md.\n"]
+    for r in rows:
+        out.append(f"---\n\n### {r['pilot_id']}\n\n**Parent:**\n{quote(r['parent_comment'])}\n\n**Reply:**\n{quote(r['reply'])}\n\n**Label:** \n")
+    (P / "pilot_labelling.md").write_text("\n".join(out))
+    print(f"wrote {P / 'pilot_labelling.md'} ({len(rows)} items)")
+elif a.mode == "read-md":
+    if not (a.file and a.rater):
+        sys.exit("usage: read-md --rater NAME FILE.md")
+    out = P / f"labels_{a.rater}.csv"
+    if out.exists() and not a.force:
+        sys.exit(f"{out} exists (labels from the terminal tool?). Use --force to overwrite.")
+    labels, bad = [], []
+    for pid, body in re.findall(r"### (P\d+)\n(.*?)(?=\n---|\Z)", Path(a.file).read_text(), re.S):
+        raw = re.search(r"\*\*Label:\*\*[ \t]*([^\n]*)", body).group(1).strip().lower().strip(".")
+        if raw in FULL:
+            labels.append((pid, FULL[raw]))
+        elif raw:
+            bad.append((pid, raw))
+    with open(out, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["pilot_id", "label"])
+        w.writerows(labels)
+    print(f"wrote {len(labels)} labels to {out}; unreadable: {bad}")
+elif a.mode == "make":
     rows = list(csv.DictReader(open(P / "pilot_sheet_blank.csv", newline="")))
     d = docx.Document()
     d.styles["Normal"].font.size = Pt(10)
