@@ -12,11 +12,16 @@ from sklearn.metrics import cohen_kappa_score
 sys.path.insert(0, ".")
 key = pd.read_csv("data/llm/pilot/pilot_key_PRIVATE.csv")
 k = pd.read_csv("data/llm/pilot/labels_kareem.csv").set_index("pilot_id").label.str.lower().str.strip()
-y = pd.read_csv("data/llm/pilot/labels_yasmina.csv").set_index("pilot_id").label.str.lower().str.strip()
-j = pd.concat([k, y], axis=1, keys=["k", "y"]).dropna()
-print(f"n={len(j)} kappa(Kareem,Yasmina)={cohen_kappa_score(j.k, j.y):.3f} raw agreement={(j.k == j.y).mean():.3f}")
-cons = j[j.k == j.y].k
-print("consensus rows:", len(cons), cons.value_counts().to_dict())
+import os
+if os.path.exists("data/llm/pilot/labels_yasmina.csv"):
+    y = pd.read_csv("data/llm/pilot/labels_yasmina.csv").set_index("pilot_id").label.str.lower().str.strip()
+    j = pd.concat([k, y], axis=1, keys=["k", "y"]).dropna()
+    print(f"n={len(j)} kappa(Kareem,Yasmina)={cohen_kappa_score(j.k, j.y):.3f} raw agreement={(j.k == j.y).mean():.3f}")
+    cons = j[j.k == j.y].k
+else:
+    print("WARNING: labels_yasmina.csv missing; SINGLE-RATER reference (Kareem only), not a consensus")
+    cons = k
+print("reference rows:", len(cons), cons.value_counts().to_dict())
 from src.algorithms.llm.data import load_shared
 pair = load_shared(0.05).set_index("comment_id")
 for f in sorted(glob.glob("data/llm/bench/*_p1.sqlite")):
