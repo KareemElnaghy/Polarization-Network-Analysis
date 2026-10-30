@@ -28,3 +28,7 @@ results/*
 
 # Background job state (checkpoints, logs, snapshots)
 runs/
+
+# Small LLM results are tracked
+!results/llm/
+!results/llm/**

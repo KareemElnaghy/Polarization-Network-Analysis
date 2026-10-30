@@ -1,0 +1,15 @@
+# LLM engine settings (Phase 1). Every value that affects outputs is part of the cache key or logged in the manifest.
+backend: ollama
+base_url: http://localhost:11434
+model: llama3.1:8b          # primary chosen from pilot + throughput only, never from GT (docs/llm_decisions.md D-M1)
+temperature: 0.0
+seed: 0
+prompt_version: v1
+max_chars: {parent: 1200, body: 1200}   # truncation; rate is logged
+num_predict: 60
+parallel: 4                 # client threads == OLLAMA_NUM_PARALLEL; measured in the throughput benchmark
+max_retries: 3
+prob_method: logprobs       # logprobs | samples
+k_samples: 10               # only for prob_method=samples and the logprob validation
+top_logprobs: 10
+store: data/llm/extractions.sqlite   # append-only; data/ is git-ignored

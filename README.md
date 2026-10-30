@@ -71,3 +71,15 @@ Run tests: `pytest`
 ### Status history
 
 <!-- Move previous "Current Status" entries here as they're superseded -->
+## LLM pipelines (Kareem) — reproduction
+
+```
+source .venv/bin/activate && pip install -e .          # environment (uv not required)
+pytest tests/test_llm_engine.py                         # mock-backend engine tests
+python scripts/llm/make_pilot_sheet.py                  # draws data/llm/pilot/pilot_sheet_blank.csv (150 edges)
+python scripts/llm/validate_probs.py llama3.1:8b        # logprob validation
+python scripts/llm/bench.py llama3.1:8b                 # throughput (refuses if a prep job is running)
+python scripts/llm/pilot_eval.py                        # kappa + model-vs-consensus once labels are in data/llm/pilot/
+```
+Config: `configs/llm/llm.yaml`. Extraction store: `data/llm/extractions.sqlite` (git-ignored; back it up off this Mac).
+Decisions: `docs/llm_decisions.md`. Log: `docs/LOG.md`.
