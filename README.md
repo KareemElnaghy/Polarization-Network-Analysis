@@ -83,3 +83,16 @@ python scripts/llm/pilot_eval.py                        # kappa + model-vs-conse
 ```
 Config: `configs/llm/llm.yaml`. Extraction store: `data/llm/extractions.sqlite` (git-ignored; back it up off this Mac).
 Decisions: `docs/llm_decisions.md`. Log: `docs/LOG.md`.
+
+### Running the 5% extraction yourself (terminal)
+```
+cd /Users/kareemelnaghy/Desktop/Polarization-Network-Analysis && source .venv/bin/activate
+caffeinate -i nice -n 10 python scripts/llm/run_extraction.py --rate 0.05 --budget 1000000000 --name tier5pct
+```
+Ctrl-C stops safely (finishes in-flight requests, saves the run as partial). Rerun the same command to resume: finished pairs are cached.
+Then, on whatever is done so far (A then B, then camp recovery):
+```
+RUN=$(ls -d runs/llm/*_tier5pct | tail -1)
+python scripts/llm/run_pipeline_a.py $RUN --name pipeA_5pct && python scripts/llm/run_pipeline_b.py $RUN --name pipeB_5pct
+python scripts/llm/eval_camp_recovery.py $(ls -d runs/llm/*_pipeB_5pct | tail -1)
+```
