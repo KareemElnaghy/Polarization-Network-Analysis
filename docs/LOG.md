@@ -28,3 +28,4 @@
 - Smoke test qwen3.5:9b: think:false OK, 100% valid JSON, logprobs present. Parallel sweep 4/8/16: flat 1.30 edges/s (D-T2).
 - 23:22 launched the 5% extraction (runs/llm/20261031T232220_tier5pct), qwen3.5:9b-q4_K_M, prompt v2, 617,041 unique pairs; ~2.9 pairs/s, ETA ~58 h (rough). Cutoff time not yet given by the user. Eval-rule clarification D-E3 logged before any 5% comparison.
 - Added scripts/llm/{start_ollama.ps1,sweep_parallel.py,rq1_compare.py}; bench.py falls back to a fixed-seed sample when the pilot key is missing.
+- 2026-11-01 01:12 Overnight supervisor started (pid 32464, logs_llm/overnight.log). Cutoff 07:30 (D-O1). Pilot files copied from the Mac into data/llm/pilot (live extractions.sqlite left untouched). AC sleep disabled.
