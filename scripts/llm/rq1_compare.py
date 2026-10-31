@@ -118,4 +118,4 @@ json.dump({"run_a": a.run_a, "run_b": a.run_b, "A_vs_B_rho": ab, "coverage": cov
 pd.set_option("display.width", 200)
 print(res.round(3).to_string(index=False))
 print("\nDelta rho_B - rho_A (4-week block bootstrap)\n", dl.round(3).to_string(index=False))
-print(f"\nA vs B rho: {ab:.3f}\nCoverage: {cov}\nFull-week GT#2: {verdict('gt2')}\nSample-matched GT#2: {verdict('gt2_0.05')}")
+print(f"\nA vs B rho: {ab:.3f}\nCoverage: {cov}\nPRIMARY (full-week GT#2): {verdict('gt2')}\nSECONDARY (5%-matched GT#2, not matched to the processed prefix): {verdict('gt2_0.05')}")
