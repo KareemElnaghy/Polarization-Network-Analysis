@@ -34,9 +34,12 @@ for f in glob.glob("runs/*/status.json"):  # rule 4: no benchmark while a prep j
 cfg = yaml.safe_load(open("configs/llm/llm.yaml")) | {"model": a.model}
 if a.base_url:
     cfg["base_url"] = a.base_url
-key = pd.read_csv("data/llm/pilot/pilot_key_PRIVATE.csv")
 edges = load_shared(0.05)
-pilot = edges[edges.comment_id.isin(key.comment_id)].head(a.n)
+if Path("data/llm/pilot/pilot_key_PRIVATE.csv").exists():
+    key = pd.read_csv("data/llm/pilot/pilot_key_PRIVATE.csv")
+    pilot = edges[edges.comment_id.isin(key.comment_id)].head(a.n)
+else:  # pilot key not on this machine: fixed-seed random sample of the same size (throughput only, no accuracy claim)
+    pilot = edges.sample(a.n, random_state=0)
 
 peak = [0.0]
 stop = threading.Event()
