@@ -15,7 +15,7 @@ import pandas as pd
 import psutil
 
 ap = argparse.ArgumentParser()
-ap.add_argument("--stop-at", default="07:30", help="local HH:MM (next occurrence)")
+ap.add_argument("--stop-at", default="23:59", help="local HH:MM (next occurrence); create logs_llm/FINISH to stop earlier")
 ap.add_argument("--first-eval-pairs", type=int, default=30000)
 ap.add_argument("--eval-every-h", type=float, default=2.0)
 ap.add_argument("--log-every-min", type=float, default=30)
@@ -157,7 +157,7 @@ cutoff += dt.timedelta(days=1) if cutoff <= now else dt.timedelta(0)
 log(f"overnight supervisor started; cutoff {cutoff:%Y-%m-%d %H:%M}; first eval at {a.first_eval_pairs} pairs, then every {a.eval_every_h} h")
 last_log = last_eval = 0.0
 n_eval = 0
-while dt.datetime.now() < cutoff:
+while dt.datetime.now() < cutoff and not Path("logs_llm/FINISH").exists():
     run, st = status()
     if not extraction_alive() and st.get("state") != "done":
         if not server_up():
@@ -171,12 +171,14 @@ while dt.datetime.now() < cutoff:
     due = (n_eval == 0 and st.get("done", 0) >= a.first_eval_pairs) or (n_eval > 0 and time.time() - last_eval > a.eval_every_h * 3600)
     if due:
         n_eval += 1
-        evaluate(f"5pct_ckpt{n_eval}")
+        res = evaluate(f"5pct_ckpt{n_eval}")
         last_eval = time.time()
+        if res:  # keep a readable draft report current after every checkpoint
+            write_report(f"5pct_ckpt{n_eval}", res[0], res[1], status(), "Not run yet (extraction still going; robustness model is scored after the primary run stops).")
         commit(f"5% checkpoint {n_eval} results ({st.get('done')} pairs)")
     time.sleep(60)
 
-log("cutoff reached: stopping extraction")
+log("FINISH file or cutoff reached: stopping extraction")
 run, _ = status()
 (Path(run) / "STOP").touch()
 t0 = time.time()
