@@ -1,0 +1,14 @@
+{
+ "run_a": "runs/llm\\20261101T043947_pipeA_5pct_ckpt2",
+ "run_b": "runs/llm\\20261101T043954_pipeB_5pct_ckpt2",
+ "A_vs_B_rho": 0.028054298642533938,
+ "coverage": {
+  "weeks_A": 53,
+  "weeks_B": 51,
+  "edges_A": 52665,
+  "edges_B_input": 52677,
+  "min_coverage_A": 0.006683719778859642
+ },
+ "PRIMARY_verdict_full_gt2": "NO WINNER (delta CI includes 0)",
+ "SECONDARY_verdict_matched_gt2": "NO WINNER (delta CI includes 0)"
+}
