@@ -22,6 +22,7 @@ ap.add_argument("run_b")
 ap.add_argument("run_c")
 ap.add_argument("--variant", default="C1")
 ap.add_argument("--out", default="results/llm/final/pipeline_c")
+ap.add_argument("--weights", default=None, help="C2: parquet pair_hash,w_C2")
 ap.add_argument("--boot", type=int, default=2000)
 a = ap.parse_args()
 V = a.variant
@@ -78,7 +79,11 @@ camp = {"mean_BA_C": float(cp.balanced_acc.mean()), "mean_BA_B": float(cb.balanc
 
 # alignment of the C weights on labelled-both edges (A3 style)
 E = al.build_edge_table(a.run_a, with_vader=False)
-E["w_C"] = wc.VARIANTS[V](E)
+if V == "C2":
+    hmap = pd.read_parquet("runs/llm/20261102T150142_tier5pct/selected_edges.parquet").drop_duplicates("comment_id").set_index("comment_id").h
+    E["w_C"] = E.comment_id.map(hmap).map(pd.read_parquet(a.weights).drop_duplicates("pair_hash").set_index("pair_hash").w_C2)
+else:
+    E["w_C"] = wc.VARIANTS[V](E)
 lb = E[E.lb]
 dw = {k: al.cluster_boot_diff(lb[c].to_numpy(), lb.cross.to_numpy(), lb.thread.to_numpy(), 1000) for k, c in (("C", "w_C"), ("B", "w_continuous_llm"))}
 dw_std = {k: {"delta": v["delta"], "delta_over_sd": v["delta"] / float(lb["w_C" if k == "C" else "w_continuous_llm"].std()), "ci": [v["ci_lo"], v["ci_hi"]]} for k, v in dw.items()}

@@ -23,10 +23,11 @@ from src.algorithms.pipeline_c import weights as wc
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("extraction_run")
-    ap.add_argument("--variant", default="C1", choices=list(wc.VARIANTS))
+    ap.add_argument("--variant", default="C1", choices=list(wc.VARIANTS) + ["C2"])
     ap.add_argument("--name", default=None)
     ap.add_argument("--weeks", default=None, help="comma-separated week_start values (default all)")
     ap.add_argument("--resume", default=None, help="existing pipeC run folder to continue")
+    ap.add_argument("--weights", default=None, help="parquet with pair_hash,w_C2 (variant C2: weights come from the encoder head)")
     ap.add_argument("--min-edges", type=int, default=None, help="plumbing checks only")
     ap.add_argument("--min-giant", type=int, default=None)
     ap.add_argument("--R", type=int, default=None, help="override null draws (plumbing checks only)")
@@ -61,7 +62,12 @@ def main():
     R = a.R or bc["R_null"].get("continuous_llm", bc["R_null"]["default"])
     Rr = 0 if a.R else bc["R_rewire"].get("continuous_llm", bc["R_rewire"]["default"])
     EX = ProcessPoolExecutor(bc.get("workers", 1)) if bc.get("workers", 1) > 1 else None
-    d = df.assign(w=wc.VARIANTS[label](df))
+    if label == "C2":
+        W = pd.read_parquet(a.weights).drop_duplicates("pair_hash").set_index("pair_hash").w_C2
+        d = df.assign(w=df.pair_hash.map(W))
+        assert d.w.notna().all(), "C2 weights missing for some edges"
+    else:
+        d = df.assign(w=wc.VARIANTS[label](df))
     t0, stopped = time.time(), False
     for wk in weeks:
         if wk in done:
