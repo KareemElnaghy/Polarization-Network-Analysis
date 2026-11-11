@@ -24,6 +24,7 @@ dependencies = [
     "psutil>=5.9",
     "numba>=0.60",
     "vaderSentiment>=3.3",
+    "statsmodels>=0.14",
 ]
 
 [tool.setuptools.packages.find]

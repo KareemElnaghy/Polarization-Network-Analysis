@@ -1,0 +1,34 @@
+{
+ "label": "H-AL CONFIRMATORY (continuous_llm delta-w); all other rows secondary/diagnostic",
+ "run_a": "runs/llm/20261107T121812_pipeA_5pct_full",
+ "n_edges": 617568,
+ "n_lb_edges": 139015,
+ "cross_share": 0.4092651872100133,
+ "threads": 6312,
+ "verdict": "H-AL SUPPORTED: continuous_llm weight is lower on cross-camp than same-camp edges, CI excludes 0",
+ "primary": {
+  "measure": "w[continuous_llm]",
+  "sign_source": "continuous_llm",
+  "delta": -0.09221691302094201,
+  "ci_lo": -0.10578524508851112,
+  "ci_hi": -0.07978601025488434,
+  "mean_cross": -0.1908169470415894,
+  "mean_same": -0.0986000340206474,
+  "n_cross": 56894,
+  "n_same": 82121,
+  "n_threads": 6312,
+  "excludes_zero": true
+ },
+ "logit_disagree_on_cross_week_FE": {
+  "odds_ratio": 1.316157277914956,
+  "or_lo": 1.2595313286548153,
+  "or_hi": 1.3753290138948575,
+  "p": 1.8170299297089287e-34,
+  "n": 139015
+ },
+ "delta_w_by_sign_source": {
+  "continuous_llm": -0.0922,
+  "binary_llm": -0.154,
+  "sentiment": -0.0571
+ }
+}
