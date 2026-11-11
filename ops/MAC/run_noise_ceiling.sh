@@ -6,7 +6,7 @@ cd "$(dirname "$0")/../.."
 source .venv/bin/activate
 SPLITS="${1:-0-9}"; WORKERS="${2:-6}"
 [ -f exports/analysis_inputs/SHA256SUMS.txt ] || { echo "missing exports/analysis_inputs (unzip analysis_inputs.zip into exports/)"; exit 1; }
-(cd exports/analysis_inputs && shasum -a 256 -c SHA256SUMS.txt)
+(cd exports/analysis_inputs && tr -d '' < SHA256SUMS.txt | shasum -a 256 -c -)
 mkdir -p logs_llm
 nohup caffeinate -i python scripts/final/noise_ceiling.py --inputs exports/analysis_inputs --splits "$SPLITS" --R 20 --workers "$WORKERS" --out runs/noise_ceiling > "logs_llm/noise_ceiling_MAC.log" 2>&1 &
 echo "started; tail -f logs_llm/noise_ceiling_MAC.log   (outputs: runs/noise_ceiling/split_XX_R20.csv; email or Drive these back)"
