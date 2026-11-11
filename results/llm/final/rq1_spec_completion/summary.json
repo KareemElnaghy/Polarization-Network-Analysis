@@ -1,0 +1,145 @@
+{
+ "labels": "A1.1-A1.3 CONFIRMATORY (D-E6 section A); A1.4 robustness, partial-week check EXPLORATORY",
+ "weeks": 53,
+ "run_a": "runs/llm/20261107T121812_pipeA_5pct_full",
+ "run_b": "runs/llm/20261107T121822_pipeB_5pct_full",
+ "holm_verdict": "0 of 4 family-A tests significant after Holm at 0.05 (smallest adjusted p = 0.226). With 52 distinct circular shifts the smallest attainable raw p is 0.019, so Holm over 4 tests cannot go below 0.075.",
+ "baseline_verdict": {
+  "share_politics|gt1_excess": {
+   "rho_cov_truth": -0.722,
+   "rho_A": -0.612,
+   "partial_A": -0.251,
+   "rho_B": -0.03,
+   "partial_B": -0.164
+  },
+  "share_politics|gt2": {
+   "rho_cov_truth": -0.763,
+   "rho_A": -0.476,
+   "partial_A": 0.071,
+   "rho_B": 0.173,
+   "partial_B": 0.133
+  },
+  "ratio_rep_dem|gt1_excess": {
+   "rho_cov_truth": -0.566,
+   "rho_A": -0.612,
+   "partial_A": -0.377,
+   "rho_B": -0.03,
+   "partial_B": -0.077
+  },
+  "ratio_rep_dem|gt2": {
+   "rho_cov_truth": -0.606,
+   "rho_A": -0.476,
+   "partial_A": -0.112,
+   "rho_B": 0.173,
+   "partial_B": 0.173
+  },
+  "share_new_users|gt1_excess": {
+   "rho_cov_truth": 0.684,
+   "rho_A": -0.63,
+   "partial_A": -0.2,
+   "rho_B": 0.025,
+   "partial_B": -0.022
+  },
+  "share_new_users|gt2": {
+   "rho_cov_truth": 0.612,
+   "rho_A": -0.477,
+   "partial_A": 0.014,
+   "rho_B": 0.2,
+   "partial_B": 0.207
+  }
+ },
+ "segments": [
+  {
+   "segment": "before_2016-06-27",
+   "n_weeks": 26,
+   "truth": "gt1_excess",
+   "series": "P_A",
+   "rho": 0.08,
+   "ci_lo": -0.38,
+   "ci_hi": 0.622,
+   "mean_P": 2.855,
+   "mean_truth": 0.204
+  },
+  {
+   "segment": "before_2016-06-27",
+   "n_weeks": 26,
+   "truth": "gt1_excess",
+   "series": "P_B",
+   "rho": 0.095,
+   "ci_lo": -0.247,
+   "ci_hi": 0.52,
+   "mean_P": 0.005,
+   "mean_truth": 0.204
+  },
+  {
+   "segment": "before_2016-06-27",
+   "n_weeks": 26,
+   "truth": "gt2",
+   "series": "P_A",
+   "rho": 0.258,
+   "ci_lo": -0.196,
+   "ci_hi": 0.646,
+   "mean_P": 2.855,
+   "mean_truth": 0.516
+  },
+  {
+   "segment": "before_2016-06-27",
+   "n_weeks": 26,
+   "truth": "gt2",
+   "series": "P_B",
+   "rho": 0.117,
+   "ci_lo": -0.165,
+   "ci_hi": 0.565,
+   "mean_P": 0.005,
+   "mean_truth": 0.516
+  },
+  {
+   "segment": "from_2016-06-27",
+   "n_weeks": 27,
+   "truth": "gt1_excess",
+   "series": "P_A",
+   "rho": -0.474,
+   "ci_lo": -0.753,
+   "ci_hi": -0.092,
+   "mean_P": 3.124,
+   "mean_truth": 0.146
+  },
+  {
+   "segment": "from_2016-06-27",
+   "n_weeks": 27,
+   "truth": "gt1_excess",
+   "series": "P_B",
+   "rho": -0.111,
+   "ci_lo": -0.468,
+   "ci_hi": 0.319,
+   "mean_P": 0.004,
+   "mean_truth": 0.146
+  },
+  {
+   "segment": "from_2016-06-27",
+   "n_weeks": 27,
+   "truth": "gt2",
+   "series": "P_A",
+   "rho": -0.126,
+   "ci_lo": -0.627,
+   "ci_hi": 0.339,
+   "mean_P": 3.124,
+   "mean_truth": 0.512
+  },
+  {
+   "segment": "from_2016-06-27",
+   "n_weeks": 27,
+   "truth": "gt2",
+   "series": "P_B",
+   "rho": 0.416,
+   "ci_lo": 0.063,
+   "ci_hi": 0.705,
+   "mean_P": 0.004,
+   "mean_truth": 0.512
+  }
+ ],
+ "robustness_exit_codes": {
+  "bootstrap_stability": 0,
+  "partial_week_sensitivity_EXPLORATORY": 0
+ }
+}
