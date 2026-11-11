@@ -38,3 +38,4 @@
 | [20261111T124852_final_alignment](runs\llm\20261111T124852_final_alignment) | P1.3 edge-level alignment (H-AL) |  | 0.05 | done | {"delta_w_continuous": -0.0922, "ci": [-0.1058, -0.0798]} |
 | [20261111T125026_final_a_negative](runs\llm\20261111T125026_final_a_negative) | P1.4 why A runs negative (H-AN) |  | 0.05 | done | {"rho_s_gt1": -0.66, "partial_rho_A_gt1": -0.339} |
 | [20261111T125056_final_a_negative](runs\llm\20261111T125056_final_a_negative) | P1.4 why A runs negative (H-AN) |  | 0.05 | done | {"rho_s_gt1": -0.66, "partial_rho_A_gt1": -0.339} |
+| [20261111T125211_final_rq4_forecast](runs\llm\20261111T125211_final_rq4_forecast) | P1.8 RQ4 rolling-origin forecasting |  | 0.05 | done | {"verdict": "No model beats persistence at p < 0.05 (two-sided DM, HAC variance). Pre-registe"} |

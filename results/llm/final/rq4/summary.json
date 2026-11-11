@@ -1,0 +1,116 @@
+{
+ "label": "RQ4 per D-E6 section G; expectation stated in advance: no model beats persistence",
+ "n_forecasts": 30,
+ "targets": "t=24..53 (1-indexed weeks)",
+ "verdict": "No model beats persistence at p < 0.05 (two-sided DM, HAC variance). Pre-registered expectation: null; reported as a finding.",
+ "best_model_by_MAE": {
+  "gt1_excess": "B",
+  "gt2": "B"
+ },
+ "table": [
+  {
+   "truth": "gt1_excess",
+   "model": "persistence",
+   "n_forecasts": 30,
+   "MAE": 0.017,
+   "RMSE": 0.0223,
+   "DM_dm": NaN,
+   "DM_p": NaN,
+   "DM_mean_loss_diff": NaN,
+   "DM_n": NaN,
+   "DM_lag": NaN,
+   "rel_MAE_vs_persistence": 1.0
+  },
+  {
+   "truth": "gt1_excess",
+   "model": "A",
+   "n_forecasts": 30,
+   "MAE": 0.0176,
+   "RMSE": 0.0229,
+   "DM_dm": 0.7115,
+   "DM_p": 0.4825,
+   "DM_mean_loss_diff": 0.0005,
+   "DM_n": 30.0,
+   "DM_lag": 3.0,
+   "rel_MAE_vs_persistence": 1.0311
+  },
+  {
+   "truth": "gt1_excess",
+   "model": "B",
+   "n_forecasts": 30,
+   "MAE": 0.0173,
+   "RMSE": 0.0228,
+   "DM_dm": 0.5541,
+   "DM_p": 0.5838,
+   "DM_mean_loss_diff": 0.0003,
+   "DM_n": 30.0,
+   "DM_lag": 3.0,
+   "rel_MAE_vs_persistence": 1.0165
+  },
+  {
+   "truth": "gt1_excess",
+   "model": "A+B",
+   "n_forecasts": 30,
+   "MAE": 0.0176,
+   "RMSE": 0.0228,
+   "DM_dm": 0.7829,
+   "DM_p": 0.44,
+   "DM_mean_loss_diff": 0.0005,
+   "DM_n": 30.0,
+   "DM_lag": 3.0,
+   "rel_MAE_vs_persistence": 1.0313
+  },
+  {
+   "truth": "gt2",
+   "model": "persistence",
+   "n_forecasts": 30,
+   "MAE": 0.0017,
+   "RMSE": 0.0022,
+   "DM_dm": NaN,
+   "DM_p": NaN,
+   "DM_mean_loss_diff": NaN,
+   "DM_n": NaN,
+   "DM_lag": NaN,
+   "rel_MAE_vs_persistence": 1.0
+  },
+  {
+   "truth": "gt2",
+   "model": "A",
+   "n_forecasts": 30,
+   "MAE": 0.0018,
+   "RMSE": 0.0023,
+   "DM_dm": 2.2,
+   "DM_p": 0.0359,
+   "DM_mean_loss_diff": 0.0001,
+   "DM_n": 30.0,
+   "DM_lag": 3.0,
+   "rel_MAE_vs_persistence": 1.0803
+  },
+  {
+   "truth": "gt2",
+   "model": "B",
+   "n_forecasts": 30,
+   "MAE": 0.0017,
+   "RMSE": 0.0022,
+   "DM_dm": -0.2217,
+   "DM_p": 0.8261,
+   "DM_mean_loss_diff": -0.0,
+   "DM_n": 30.0,
+   "DM_lag": 3.0,
+   "rel_MAE_vs_persistence": 0.9926
+  },
+  {
+   "truth": "gt2",
+   "model": "A+B",
+   "n_forecasts": 30,
+   "MAE": 0.0017,
+   "RMSE": 0.0023,
+   "DM_dm": 0.494,
+   "DM_p": 0.625,
+   "DM_mean_loss_diff": 0.0,
+   "DM_n": 30.0,
+   "DM_lag": 3.0,
+   "rel_MAE_vs_persistence": 1.0252
+  }
+ ]
+}
