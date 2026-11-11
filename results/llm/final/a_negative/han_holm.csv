@@ -1,0 +1,3 @@
+test,p,p_holm,significant_at_alpha
+"H-AN(i) rho(s_t,GT1)",0.1320754716981132,0.1320754716981132,False
+H-AN(ii) |rho_A|>|partial|,0.015,0.03,True

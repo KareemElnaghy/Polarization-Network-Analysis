@@ -1,0 +1,56 @@
+{
+ "label": "H-AN CONFIRMATORY on GT#1 (2 tests, Holm); GT#2 rows, decomposition and components are descriptive",
+ "run_a": "runs/llm/20261107T121812_pipeA_5pct_full",
+ "n_lb_edges": 139015,
+ "mean_cross_share": 0.42099374251828137,
+ "verdict_i": "(i) holds: rho(s_t, GT#1) = -0.660 (circular-shift p = 0.132, Holm-adjusted 0.132)",
+ "verdict_ii": "(ii) holds: |rho_A| - |partial rho_A| = +0.272, 95% CI [+0.042, +0.432] (rho_A = -0.612 -> partial -0.339)",
+ "holm": [
+  {
+   "test": "H-AN(i) rho(s_t,GT1)",
+   "p": 0.1320754716981132,
+   "p_holm": 0.1320754716981132,
+   "significant_at_alpha": false
+  },
+  {
+   "test": "H-AN(ii) |rho_A|>|partial|",
+   "p": 0.015,
+   "p_holm": 0.03,
+   "significant_at_alpha": true
+  }
+ ],
+ "shift_share_variance_shares": {
+  "levels_mix": 0.030647703062630902,
+  "levels_within": 0.9693522969373688,
+  "diffs_mix": 0.00014178637729782935,
+  "diffs_within": 0.9998582136227022,
+  "decomposition_max_abs_error_levels": 0.002881262742825186
+ },
+ "sentence": "Pre-registered conditions as written: (i) met, (ii) met. (i) holds: rho(s_t, GT#1) = -0.660 (circular-shift p = 0.132, Holm-adjusted 0.132); (ii) holds: |rho_A| - |partial rho_A| = +0.272, 95% CI [+0.042, +0.432] (rho_A = -0.612 -> partial -0.339). Caveats stated by the script, not resolved by it: (i) is not significant after Holm (adjusted p = 0.132); the descriptive shift-share attributes only 3% of the variance of P_A to the changing mix of same/cross/other edge types (97% to within-type score changes). Which CLAIMS.md wording applies is a CP1 judgment call.",
+ "tests": [
+  {
+   "truth": "gt1_excess",
+   "status": "PRIMARY",
+   "rho_s_truth": -0.6604579906466699,
+   "p_s_truth": 0.1320754716981132,
+   "rho_A": -0.6118368005160458,
+   "partial_rho_A_given_s": -0.33935886476283017,
+   "abs_diff": 0.27247793575321566,
+   "abs_diff_lo": 0.04158652302031357,
+   "abs_diff_hi": 0.43153055168586063,
+   "boot_p_two_sided": 0.015
+  },
+  {
+   "truth": "gt2",
+   "status": "secondary",
+   "rho_s_truth": -0.6811804547653605,
+   "p_s_truth": 0.1509433962264151,
+   "rho_A": -0.4755684567005322,
+   "partial_rho_A_given_s": -0.08685818159349824,
+   "abs_diff": 0.388710275107034,
+   "abs_diff_lo": -0.06792135964962163,
+   "abs_diff_hi": 0.4624176924826146,
+   "boot_p_two_sided": 0.088
+  }
+ ]
+}
