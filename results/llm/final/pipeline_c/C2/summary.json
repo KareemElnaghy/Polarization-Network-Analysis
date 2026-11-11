@@ -1,0 +1,87 @@
+{
+ "label": "D-E6 section C CONFIRMATORY (family C, 4 tests, Holm); variant C2; camp recovery and alignment are secondary",
+ "weeks_scored_C": 53,
+ "run_c": "runs/llm/20261111T171109_pipeC2_5pct_full",
+ "verdicts": {
+  "C_beats_B_GT1_(rule)": "C2 beats B on gt1_excess: NO (delta +0.203, 95% CI [-0.231, +0.398], rho_C2 +0.174, Holm-adjusted p 0.788)",
+  "C_beats_B_GT2_(secondary)": "C2 beats B on gt2: NO (delta +0.200, 95% CI [-0.209, +0.467], rho_C2 +0.373, Holm-adjusted p 0.788)",
+  "C_beats_A_GT2_(rule)": "C2 beats A on gt2: YES (delta +0.849, 95% CI [+0.369, +1.121], rho_C2 +0.373, Holm-adjusted p 0.002)",
+  "C_beats_A_GT1_(secondary)": "C2 beats A on gt1_excess: YES (delta +0.786, 95% CI [+0.315, +1.075], rho_C2 +0.174, Holm-adjusted p 0.002)"
+ },
+ "camp_recovery": {
+  "mean_BA_C": 0.5197726891403222,
+  "mean_BA_B": 0.5181556980061083,
+  "mean_null_C": 0.511023363127595,
+  "weeks_above_null_p95_C": 14,
+  "weeks_above_null_p95_B": 14
+ },
+ "alignment_dw_cross_minus_same": {
+  "C": {
+   "delta": -0.08640779943027105,
+   "delta_over_sd": -0.1577955220731299,
+   "ci": [
+    -0.1035706606660442,
+    -0.07091681941748605
+   ]
+  },
+  "B": {
+   "delta": -0.09221691302094201,
+   "delta_over_sd": -0.16285681174516037,
+   "ci": [
+    -0.10578524508851112,
+    -0.07978601025488434
+   ]
+  }
+ },
+ "leakage_diagnostic": "not computed: GT#2 phrase-leaning extremity per reply is not available at edge level",
+ "levels": [
+  {
+   "series": "A",
+   "truth": "gt1_excess",
+   "n_weeks": 53,
+   "rho": -0.6118,
+   "perm_p": 0.0566,
+   "rho_diff": -0.0802
+  },
+  {
+   "series": "A",
+   "truth": "gt2",
+   "n_weeks": 53,
+   "rho": -0.4756,
+   "perm_p": 0.2075,
+   "rho_diff": 0.0139
+  },
+  {
+   "series": "B",
+   "truth": "gt1_excess",
+   "n_weeks": 53,
+   "rho": -0.0296,
+   "perm_p": 0.8679,
+   "rho_diff": -0.1795
+  },
+  {
+   "series": "B",
+   "truth": "gt2",
+   "n_weeks": 53,
+   "rho": 0.173,
+   "perm_p": 0.3774,
+   "rho_diff": -0.0206
+  },
+  {
+   "series": "C2",
+   "truth": "gt1_excess",
+   "n_weeks": 53,
+   "rho": 0.1737,
+   "perm_p": 0.5849,
+   "rho_diff": -0.154
+  },
+  {
+   "series": "C2",
+   "truth": "gt2",
+   "n_weeks": 53,
+   "rho": 0.3733,
+   "perm_p": 0.3208,
+   "rho_diff": 0.0007
+  }
+ ]
+}
