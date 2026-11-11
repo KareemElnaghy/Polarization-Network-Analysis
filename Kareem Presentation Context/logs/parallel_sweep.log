@@ -1,0 +1,8 @@
+== OLLAMA_NUM_PARALLEL=4 | VRAM loaded 10164 MiB, peak 10164 MiB
+{'model': 'qwen3.5:9b-q4_K_M', 'parallel': 4, 'edges': 200, 'done': 200, 'failed': 0, 'edges_per_s': 1.2955932864139226, 'tokens_per_s': np.float64(30.61486935796099), 'first_try_valid': np.float64(1.0), 'valid_final': 1.0, 'probs_present': np.float64(1.0), 'peak_ollama_gb': 4.107321344, 'wall_s': 154.3VRAM idle-loaded: 10164 MiB ; peak M== OLLAMA_NUM_PARALLEL=8 | VRAM loaded 9892 MiB, peak 10380 MiB
+{'model': 'qwen3.5:9b-q4_K_M', 'parallel': 8, 'edges': 200, 'done': 200, 'failed': 0, 'edges_per_s': 1.3060125146226447, 'tokens_per_s': np.float64(30.867605783106207), 'first_try_valid': np.float64(1.0), 'valid_final': 1.0, 'probs_present': np.float64(1.0), 'peak_ollama_gb': 4.105601024, 'wall_s': 153.1378893852234, 'truncatiVRAM idle-lo== OLLAMA_NUM_PARALLEL=16 | VRAM loaded 9778 MiB, peak 10035 MiB
+{'model': 'qwen3.5:9b-q4_K_M', 'parallel': 16, 'edges': 200, 'done': 200, 'failed': 0, 'edges_per_s': 1.3023055697060968, 'tokens_per_s': np.float64(30.77348061215507), 'first_try_valid': np.float64(1.0), 'valid_final': 1.0, 'probs_present': np.float64(1.0), 'peak_ollama_gb': 4.58549248, 'wall_s': 153.57378840446472, 'truncation': 0.06}
+n': 0.06}
+VRAM idle-loaded: 9778 MiB ; peak MiB during run: 9993
+
+

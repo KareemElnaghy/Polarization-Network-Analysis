@@ -1,0 +1,10 @@
+gt1_excess seed 0: delta 0.389 CI [0.023, 0.655]  P(delta<=0)=0.018
+gt1_excess seed 1: delta 0.389 CI [0.019, 0.648]  P(delta<=0)=0.018
+gt1_excess seed 2: delta 0.389 CI [0.019, 0.646]  P(delta<=0)=0.018
+gt1_excess seed 3: delta 0.389 CI [0.006, 0.665]  P(delta<=0)=0.022
+gt1_excess seed 4: delta 0.389 CI [0.020, 0.660]  P(delta<=0)=0.018
+gt2 seed 0: delta 0.443 CI [0.063, 0.708]  P(delta<=0)=0.009
+gt2 seed 1: delta 0.443 CI [0.062, 0.705]  P(delta<=0)=0.011
+gt2 seed 2: delta 0.443 CI [0.072, 0.713]  P(delta<=0)=0.009
+gt2 seed 3: delta 0.443 CI [0.058, 0.718]  P(delta<=0)=0.011
+gt2 seed 4: delta 0.443 CI [0.069, 0.707]  P(delta<=0)=0.009

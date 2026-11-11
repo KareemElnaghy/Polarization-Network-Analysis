@@ -1,0 +1,6 @@
+{'model': 'llama3.1:8b', 'parallel': 1, 'edges': 150, 'done': 150, 'failed': 0, 'edges_per_s': 0.7689600680466769, 'tokens_per_s': np.float64(27.61591924378299), 'first_try_valid': np.float64(1.0), 'valid_final': 1.0, 'probs_present': np.float64(1.0), 'peak_ollama_gb': 0.054444032, 'wall_s': 195.0686469078064, 'truncation': 0.0}
+{'model': 'llama3.1:8b', 'parallel': 2, 'edges': 150, 'done': 150, 'failed': 0, 'edges_per_s': 0.7621047615028648, 'tokens_per_s': np.float64(27.36972233477288), 'first_try_valid': np.float64(1.0), 'valid_final': 1.0, 'probs_present': np.float64(1.0), 'peak_ollama_gb': 0.054444032, 'wall_s': 196.82333397865295, 'truncation': 0.0}
+{'model': 'llama3.1:8b', 'parallel': 4, 'edges': 150, 'done': 150, 'failed': 0, 'edges_per_s': 0.7595837985311069, 'tokens_per_s': np.float64(27.279186151247153), 'first_try_valid': np.float64(1.0), 'valid_final': 1.0, 'probs_present': np.float64(1.0), 'peak_ollama_gb': 0.064110592, 'wall_s': 197.4765658378601, 'truncation': 0.0}
+rate 0.01: 152287 unique pairs -> 55.0 h at best setting
+rate 0.05: 617041 unique pairs -> 222.9 h at best setting
+rate 0.2: 2733767 unique pairs -> 987.5 h at best setting

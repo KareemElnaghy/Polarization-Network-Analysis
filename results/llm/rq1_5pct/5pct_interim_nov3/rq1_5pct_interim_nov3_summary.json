@@ -1,0 +1,14 @@
+{
+ "run_a": "runs/llm/20261103T231046_pipeA_5pct_interim_nov3",
+ "run_b": "runs/llm/20261103T231056_pipeB_5pct_interim_nov3",
+ "A_vs_B_rho": 0.05829704886308659,
+ "coverage": {
+  "weeks_A": 53,
+  "weeks_B": 53,
+  "edges_A": 370008,
+  "edges_B_input": 370031,
+  "min_coverage_A": 0.3767742884459807
+ },
+ "PRIMARY_verdict_full_gt2": "B wins on GT#2 (delta CI excludes 0 and rho_B > 0)",
+ "SECONDARY_verdict_matched_gt2": "B wins on GT#2 (delta CI excludes 0 and rho_B > 0)"
+}

@@ -1,0 +1,12 @@
+{
+ "model": "llama3.1:8b",
+ "n": 100,
+ "logprobs_returned": 1.0,
+ "probs_parsed": 1.0,
+ "mean_max_p": 0.9042654135615313,
+ "mae_vs_freq": 0.0591563909589791,
+ "argmax_matches_greedy": 1.0,
+ "spearman_agree": 0.5422724462303004,
+ "spearman_neutral": 0.5636504071730866,
+ "spearman_disagree": 0.7325200745641236
+}

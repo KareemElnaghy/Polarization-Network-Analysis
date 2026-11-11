@@ -1,0 +1,36 @@
+2026-11-01 01:12:47  overnight supervisor started; cutoff 2026-11-01 07:30; first eval at 30000 pairs, then every 2.0 h
+2026-11-01 01:12:47  progress: done 18175 / 617041, failed 0, eta_h 60.6, run runs/llm\20261031T232220_tier5pct
+2026-11-01 01:14:05  overnight supervisor started; cutoff 2026-11-01 23:59; first eval at 30000 pairs, then every 2.0 h
+2026-11-01 01:14:05  progress: done 18400 / 617041, failed 0, eta_h 60.6, run runs/llm\20261031T232220_tier5pct
+2026-11-01 01:44:06  progress: done 23425 / 617041, failed 0, eta_h 59.8, run runs/llm\20261031T232220_tier5pct
+2026-11-01 02:14:07  progress: done 28500 / 617041, failed 0, eta_h 59.1, run runs/llm\20261031T232220_tier5pct
+2026-11-01 02:23:07  checkpoint evaluation '5pct_ckpt1' on runs/llm\20261031T232220_tier5pct (30000 pairs done)
+2026-11-01 02:39:38  checkpoint '5pct_ckpt1' done: A=runs/llm\20261101T022309_pipeA_5pct_ckpt1 B=runs/llm\20261101T022314_pipeB_5pct_ckpt1
+2026-11-01 02:39:38  draft report written: docs/reports/rq1_5pct_report.md
+2026-11-01 02:44:42  progress: done 33375 / 617041, failed 0, eta_h 59.0, run runs/llm\20261031T232220_tier5pct
+2026-11-01 03:14:42  progress: done 38400 / 617041, failed 0, eta_h 58.4, run runs/llm\20261031T232220_tier5pct
+2026-11-01 03:44:43  progress: done 43400 / 617041, failed 0, eta_h 57.8, run runs/llm\20261031T232220_tier5pct
+2026-11-01 04:14:44  progress: done 48425 / 617041, failed 0, eta_h 57.2, run runs/llm\20261031T232220_tier5pct
+2026-11-01 04:39:44  checkpoint evaluation '5pct_ckpt2' on runs/llm\20261031T232220_tier5pct (52625 pairs done)
+2026-11-01 05:07:21  checkpoint '5pct_ckpt2' done: A=runs/llm\20261101T043947_pipeA_5pct_ckpt2 B=runs/llm\20261101T043954_pipeB_5pct_ckpt2
+2026-11-01 05:07:21  draft report written: docs/reports/rq1_5pct_report.md
+2026-11-01 05:08:25  progress: done 56975 / 617041, failed 0, eta_h 56.7, run runs/llm\20261031T232220_tier5pct
+2026-11-01 05:38:26  progress: done 61950 / 617041, failed 0, eta_h 56.2, run runs/llm\20261031T232220_tier5pct
+2026-11-01 06:08:27  progress: done 67050 / 617041, failed 0, eta_h 55.5, run runs/llm\20261031T232220_tier5pct
+2026-11-01 06:38:27  progress: done 71900 / 617041, failed 0, eta_h 55.1, run runs/llm\20261031T232220_tier5pct
+2026-11-01 07:07:28  checkpoint evaluation '5pct_ckpt3' on runs/llm\20261031T232220_tier5pct (76600 pairs done)
+2026-11-01 07:48:58  checkpoint '5pct_ckpt3' done: A=runs/llm\20261101T070735_pipeA_5pct_ckpt3 B=runs/llm\20261101T070746_pipeB_5pct_ckpt3
+2026-11-01 07:48:58  draft report written: docs/reports/rq1_5pct_report.md
+2026-11-01 07:50:02  progress: done 82750 / 617041, failed 0, eta_h 54.6, run runs/llm\20261031T232220_tier5pct
+2026-11-01 08:20:03  progress: done 87500 / 617041, failed 0, eta_h 54.2, run runs/llm\20261031T232220_tier5pct
+2026-11-01 08:50:04  progress: done 92275 / 617041, failed 0, eta_h 53.8, run runs/llm\20261031T232220_tier5pct
+2026-11-01 09:20:04  progress: done 97200 / 617041, failed 0, eta_h 53.3, run runs/llm\20261031T232220_tier5pct
+2026-11-01 09:26:07  starting/resuming extraction (same command; finished pairs are cached)
+2026-11-01 09:49:08  checkpoint evaluation '5pct_ckpt4' on runs/llm\20261101T092612_tier5pct (3750 pairs done)
+2026-11-01 10:36:55  checkpoint '5pct_ckpt4' done: A=runs/llm\20261101T094910_pipeA_5pct_ckpt4 B=runs/llm\20261101T094916_pipeB_5pct_ckpt4
+2026-11-01 10:36:55  draft report written: docs/reports/rq1_5pct_report.md
+2026-11-01 10:37:59  progress: done 11425 / 518971, failed 0, eta_h 53.1, run runs/llm\20261101T092612_tier5pct
+2026-11-01 11:08:00  progress: done 16450 / 518971, failed 0, eta_h 51.8, run runs/llm\20261101T092612_tier5pct
+2026-11-01 11:38:01  progress: done 21425 / 518971, failed 0, eta_h 51.0, run runs/llm\20261101T092612_tier5pct
+2026-11-01 12:08:02  progress: done 26600 / 518971, failed 0, eta_h 49.9, run runs/llm\20261101T092612_tier5pct
+2026-11-01 12:37:03  checkpoint evaluation '5pct_ckpt5' on runs/llm\20261101T092612_tier5pct (31625 pairs done)

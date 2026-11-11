@@ -1,0 +1,78 @@
+{
+ "run_id": "20261101T131644_pipeB_5pct_final",
+ "status": "done",
+ "start": 1793531804.94621,
+ "git_sha": "741a08b012a0b89ad2afdbfe5a36f57b88ae96d8",
+ "git_dirty": true,
+ "config": {
+  "backend": "ollama",
+  "base_url": "http://localhost:11434",
+  "model": "qwen3.5:9b-q4_K_M",
+  "temperature": 0.0,
+  "seed": 0,
+  "prompt_version": "v2",
+  "max_chars": {
+   "parent": 1200,
+   "body": 1200
+  },
+  "num_predict": 60,
+  "parallel": 4,
+  "max_retries": 3,
+  "prob_method": "logprobs",
+  "k_samples": 10,
+  "top_logprobs": 10,
+  "store": "data/llm/extractions.sqlite",
+  "pipeline_b": {
+   "sign_sources": [
+    "continuous_llm",
+    "binary_llm",
+    "sentiment",
+    "unsigned"
+   ],
+   "primary_source": "continuous_llm",
+   "pair_aggregation": "mean",
+   "neutral_policy": "drop",
+   "min_edges": 40,
+   "min_giant_nodes": 20,
+   "restarts": 10,
+   "R_null": {
+    "continuous_llm": 50,
+    "default": 20
+   },
+   "R_rewire": {
+    "continuous_llm": 10,
+    "default": 0
+   },
+   "seed": 0,
+   "workers": 6
+  }
+ },
+ "seed": 0,
+ "model": "qwen3.5:9b-q4_K_M",
+ "prompt_version": "v2",
+ "inputs": {
+  "runs\\llm\\20261101T092612_tier5pct\\selected_edges.parquet": "188407d05841fd9266cbe2b97844177cd5d2ea40119768801b35932e2f0500ed"
+ },
+ "hardware": "Windows-11-10.0.26300-SP0 AMD64",
+ "sample_rate": 0.05,
+ "source_run": "20261101T092612_tier5pct",
+ "end": 1793535355.8902266,
+ "headline": {
+  "edges": 135678,
+  "weeks_scored": 212,
+  "weeks_nan": 0,
+  "P_B_mean_binary_llm": 0.03696622280874679,
+  "P_B_mean_continuous_llm": -0.0008050841668739978,
+  "P_B_mean_sentiment": -0.02045014700278679,
+  "P_B_mean_unsigned": 0.0,
+  "seconds": 3550.710440635681
+ },
+ "outputs": {
+  "camp_assignments.parquet": "f20027685ad094c059a0d95f1ebe22a3f372dad2512dca2f1e3bc6f8d1862486",
+  "pipelineB_weekly.csv": "51515be811c73e05858857336cd9fb9efb9cd6b583f55dc03d769538d02448a1",
+  "pipelineB_weekly.pdf": "eaddf9ba68d1deda0928df89e7215a41951120ee486009c47f176ed5865be7b4",
+  "pipelineB_weekly.png": "c54ea36b06513ec24856ef56af63b2a11eb86f7fbc217b008369adfe7ff7ad11",
+  "weekly_B.csv": "51515be811c73e05858857336cd9fb9efb9cd6b583f55dc03d769538d02448a1",
+  "weekly_B.parquet": "e37b00e2fd99633da8f281f82ddc329d475bb1c87427cffda7a82d7bbab9e247"
+ }
+}

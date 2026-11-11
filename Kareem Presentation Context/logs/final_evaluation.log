@@ -1,0 +1,63 @@
++ PY=.venv/Scripts/python
+++ ls -d runs/llm/20261031T232220_tier5pct runs/llm/20261101T092612_tier5pct
+++ tail -1
++ RUN=runs/llm/20261101T092612_tier5pct
++ .venv/Scripts/python scripts/llm/run_pipeline_a.py runs/llm/20261101T092612_tier5pct --name pipeA_5pct_final
+runs\llm\20261101T131638_pipeA_5pct_final {'weeks': 53, 'edges': 135678, 'P_A_min': 2.5100635593220337, 'P_A_max': 4.003636363636364, 'P_A_mean': 3.0839284748645923, 'low_n_weeks': 0, 'min_coverage': 0.03074489304628929}
++ .venv/Scripts/python scripts/llm/run_pipeline_b.py runs/llm/20261101T092612_tier5pct --name pipeB_5pct_final
+135678 extracted edges of 617568; sources ['continuous_llm', 'binary_llm', 'sentiment', 'unsigned']
+continuous_llm done 1865.0 s
+binary_llm done 2400.6 s
+sentiment done 2947.4 s
+unsigned done 3550.3 s
+runs\llm\20261101T131644_pipeB_5pct_final {'edges': 135678, 'weeks_scored': 212, 'weeks_nan': 0, 'P_B_mean_binary_llm': 0.03696622280874679, 'P_B_mean_continuous_llm': -0.0008050841668739978, 'P_B_mean_sentiment': -0.02045014700278679, 'P_B_mean_unsigned': 0.0, 'seconds': 3550.710440635681}
+++ ls -d runs/llm/20261101T131638_pipeA_5pct_final
+++ tail -1
++ A=runs/llm/20261101T131638_pipeA_5pct_final
+++ ls -d runs/llm/20261101T131644_pipeB_5pct_final
+++ tail -1
++ B=runs/llm/20261101T131644_pipeB_5pct_final
++ .venv/Scripts/python scripts/llm/eval_camp_recovery.py runs/llm/20261101T131644_pipeB_5pct_final
+                weeks  mean_balanced_acc  mean_null  weeks_above_null_p95  mean_labelled_users
+sign_source                                                                                   
+binary_llm       53.0              0.540      0.527                   9.0              363.038
+continuous_llm   53.0              0.531      0.524                   8.0              450.340
+sentiment        53.0              0.534      0.526                   6.0              384.094
+unsigned         53.0              0.500      0.500                   0.0              450.340
++ .venv/Scripts/python scripts/llm/rq1_compare.py runs/llm/20261101T131638_pipeA_5pct_final runs/llm/20261101T131644_pipeB_5pct_final --out results/llm/rq1_5pct/5pct_final --label 5pct_final
+             truth_set            truth   series  n_weeks    rho  perm_p  rho_diff  partial_rho_vol
+          PRIMARY-full       gt1_excess      P_A       53 -0.440   0.075    -0.086           -0.459
+          PRIMARY-full       gt1_excess      P_B       53 -0.052   0.811    -0.034           -0.052
+          PRIMARY-full       gt1_excess volume_A       53  0.004   1.000     0.300              NaN
+          PRIMARY-full       gt1_excess volume_B       53  0.004   1.000     0.300              NaN
+          PRIMARY-full              gt2      P_A       53 -0.376   0.113    -0.149           -0.349
+          PRIMARY-full              gt2      P_B       53  0.067   0.755    -0.252            0.064
+          PRIMARY-full              gt2 volume_A       53 -0.166   0.340    -0.078              NaN
+          PRIMARY-full              gt2 volume_B       53 -0.166   0.340    -0.078              NaN
+SECONDARY-5pct-matched  gt1_excess_0.05      P_A       53 -0.186   0.340     0.200           -0.191
+SECONDARY-5pct-matched  gt1_excess_0.05      P_B       53  0.034   0.849    -0.028            0.034
+SECONDARY-5pct-matched  gt1_excess_0.05 volume_A       53 -0.011   1.000     0.083              NaN
+SECONDARY-5pct-matched  gt1_excess_0.05 volume_B       53 -0.011   1.000     0.083              NaN
+SECONDARY-5pct-matched         gt2_0.05      P_A       52 -0.223   0.245     0.159           -0.193
+SECONDARY-5pct-matched         gt2_0.05      P_B       52  0.070   0.755    -0.078            0.075
+SECONDARY-5pct-matched         gt2_0.05 volume_A       52 -0.123   0.415     0.005              NaN
+SECONDARY-5pct-matched         gt2_0.05 volume_B       52 -0.123   0.415     0.005              NaN
+SECONDARY-5pct-matched gt2_alt_auc_0.05      P_A       52 -0.248   0.189     0.261           -0.217
+SECONDARY-5pct-matched gt2_alt_auc_0.05      P_B       52 -0.027   0.887    -0.131           -0.023
+SECONDARY-5pct-matched gt2_alt_auc_0.05 volume_A       52 -0.135   0.415     0.034              NaN
+SECONDARY-5pct-matched gt2_alt_auc_0.05 volume_B       52 -0.135   0.415     0.034              NaN
+
+Delta rho_B - rho_A (4-week block bootstrap)
+              truth_set            truth  delta_rho_B_minus_A  ci_lo  ci_hi  n_weeks_both
+          PRIMARY-full       gt1_excess                0.389  0.017  0.647            53
+          PRIMARY-full              gt2                0.443  0.061  0.701            53
+SECONDARY-5pct-matched  gt1_excess_0.05                0.220 -0.109  0.465            53
+SECONDARY-5pct-matched         gt2_0.05                0.293 -0.127  0.524            52
+SECONDARY-5pct-matched gt2_alt_auc_0.05                0.221 -0.191  0.477            52
+
+A vs B rho: 0.273
+Coverage: {'weeks_A': 53, 'weeks_B': 53, 'edges_A': 135678, 'edges_B_input': 135678, 'min_coverage_A': 0.03074489304628929}
+PRIMARY (full-week GT#2): B wins on GT#2 (delta CI excludes 0 and rho_B > 0)
+SECONDARY (5%-matched GT#2, not matched to the processed prefix): NO WINNER (delta CI includes 0)
++ echo FINAL_EVAL_DONE
+FINAL_EVAL_DONE

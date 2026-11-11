@@ -1,0 +1,2 @@
+model,parallel,edges,done,failed,edges_per_s,tokens_per_s,first_try_valid,valid_final,probs_present,peak_ollama_gb,wall_s,truncation,proj_hours_0.01,proj_hours_0.05,proj_hours_0.2
+qwen3.5:9b-q4_K_M,8,200,200,0,1.2969261047008933,30.652848484605613,1.0,1.0,1.0,4.105203712,154.21079063415527,0.06,32.61708149069945,132.15886175512472,585.5227367771705

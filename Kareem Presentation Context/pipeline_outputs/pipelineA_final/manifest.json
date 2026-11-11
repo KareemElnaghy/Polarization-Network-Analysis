@@ -1,0 +1,54 @@
+{
+ "run_id": "20261101T131638_pipeA_5pct_final",
+ "status": "done",
+ "start": 1793531798.0279715,
+ "git_sha": "741a08b012a0b89ad2afdbfe5a36f57b88ae96d8",
+ "git_dirty": true,
+ "config": {
+  "backend": "ollama",
+  "base_url": "http://localhost:11434",
+  "model": "qwen3.5:9b-q4_K_M",
+  "temperature": 0.0,
+  "seed": 0,
+  "prompt_version": "v2",
+  "max_chars": {
+   "parent": 1200,
+   "body": 1200
+  },
+  "num_predict": 60,
+  "parallel": 4,
+  "max_retries": 3,
+  "prob_method": "logprobs",
+  "k_samples": 10,
+  "top_logprobs": 10,
+  "store": "data/llm/extractions.sqlite"
+ },
+ "seed": 0,
+ "model": "qwen3.5:9b-q4_K_M",
+ "prompt_version": "v2",
+ "inputs": {
+  "runs\\llm\\20261101T092612_tier5pct\\selected_edges.parquet": "188407d05841fd9266cbe2b97844177cd5d2ea40119768801b35932e2f0500ed"
+ },
+ "hardware": "Windows-11-10.0.26300-SP0 AMD64",
+ "sample_rate": 0.05,
+ "source_run": "20261101T092612_tier5pct",
+ "rules_version": "A-rules-v1",
+ "end": 1793531798.9702158,
+ "headline": {
+  "weeks": 53,
+  "edges": 135678,
+  "P_A_min": 2.5100635593220337,
+  "P_A_max": 4.003636363636364,
+  "P_A_mean": 3.0839284748645923,
+  "low_n_weeks": 0,
+  "min_coverage": 0.03074489304628929
+ },
+ "outputs": {
+  "edge_scores.parquet": "9a2221feb78bdcbaa6127e33376ea5e9fb71c3c7e1cbcb3a9644abb076ce303a",
+  "pipelineA_weekly.csv": "4ff6f08ef30480c4cec6e2691e76c24b5fbf84f5735c4af2cc28b956a06df4c3",
+  "pipelineA_weekly.pdf": "44dba786d7a33f1ff05140594a651e01192bcb691ba229824fa5e0845be8ae18",
+  "pipelineA_weekly.png": "7d97b0dee7d4573106b5c36a5d5880911d3f5dd2124139306187576c6a36a162",
+  "weekly_A.csv": "4ff6f08ef30480c4cec6e2691e76c24b5fbf84f5735c4af2cc28b956a06df4c3",
+  "weekly_A.parquet": "a45a3ebed9523bc359d35b5944a88f581e8b4d8acd99e337516020e70c4c236d"
+ }
+}

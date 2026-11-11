@@ -1,0 +1,4 @@
+weeks 53 first 2015-12-28 n edges first/last/median 275 1687 2512
+all 53 weeks           n=53 | gt1_excess: rho_A -0.44 rho_B -0.05 delta +0.39 | gt2: rho_A -0.38 rho_B +0.07 delta +0.44
+drop first week        n=52 | gt1_excess: rho_A -0.41 rho_B -0.00 delta +0.41 | gt2: rho_A -0.37 rho_B +0.09 delta +0.46
+drop first and last    n=51 | gt1_excess: rho_A -0.39 rho_B -0.02 delta +0.37 | gt2: rho_A -0.35 rho_B +0.08 delta +0.44
