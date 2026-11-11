@@ -5,7 +5,8 @@ Agent model this session: Sonnet 5.5 (cheap lane). Folder lives at `docs/final_p
 ## Now running
 | Task | Machine | Started | Log | ETA |
 |---|---|---|---|---|
-| (none) | | | | |
+| P1.5 Pipeline C1, full 5% (R=50, 6 workers) | WIN CPU | 2026-11-11 12:54 | `logs_llm/pipeC1_5pct_full.log`; run `runs/llm/20261111T125450_pipeC1_5pct_full` (resumable: rerun `scripts/llm/run_pipeline_c.py runs/llm/20261102T150142_tier5pct --variant C1 --resume <run>`; stop by creating `<run>/STOP`) | ~2-3 h |
+| torch+sentence-transformers install into `.venv` (for G1.7) | WIN | 12:57 | `logs_llm/pip_torch.log` | minutes |
 
 ## Done
 | Task | Headline result | File |
@@ -15,6 +16,8 @@ Agent model this session: Sonnet 5.5 (cheap lane). Folder lives at `docs/final_p
 | P0.3 pre-register | D-E5 and D-E6 appended to `docs/llm_decisions.md`; proposal copied to `docs/proposal.pdf`. "Git SHA at freeze" recorded as `f56e579` (a commit cannot contain its own hash). | commit `533eb2d`, tag `prereg-final-v1` |
 | P0.4 ops scripts | `ops/UBU/setup.sh`, `ops/MAC/setup.sh` (syntax-checked only, not run) | `ops/` |
 | P0.5 | this file | |
+| P1.8 RQ4 forecasting | No model beats persistence (30 one-step forecasts, t=24..53). MAE GT#1: persistence 0.0170, A 0.0176, B 0.0173; GT#2: 0.0017 / 0.0018 / 0.0017. A is significantly WORSE than persistence on GT#2 (DM p 0.036). Matches the pre-registered expectation. | `results/llm/final/rq4/` |
+| P1.5 code | Pipeline C1 weights + resumable runner; parity check: runner fed B's own weight reproduces B's F_obs and P_B exactly on 2 weeks. C1 stats script `scripts/final/rq1_pipeline_c.py` written, to run when the run finishes. | `src/algorithms/pipeline_c/`, `scripts/llm/run_pipeline_c.py` |
 | G1.1 distill export | 616,891 rows (150 pilot pairs removed; train 567,585 / val 26,416 / test 22,890; 11,160 threads; 53 weeks); sha256 `d0acab85…98666` | `data/llm/distill/distill_v1.parquet`, `manifest.json` (git-ignored; script `scripts/final/export_distill.py`) |
 | P1.1 spec completion | Holm: 0 of 4 family-A tests significant (min adj p 0.226). Composition-only baseline `share_politics` has rho -0.72 (GT#1) / -0.76 (GT#2), larger in magnitude than rho_A or rho_B; partial rho_A(GT#2 given share_politics) = +0.07. 06-27 split: before, all CIs include 0; after, rho_B(GT#2) = +0.42 [0.06, 0.70], rho_A(GT#1) = -0.47 [-0.75, -0.09]. Seed stability: delta GT#2 CI lower bound 0.20-0.22 across 5 seeds. | `results/llm/final/rq1_spec_completion/` |
 | P1.3 alignment (H-AL) | Delta-w (cross - same) = -0.092, 95% CI [-0.106, -0.080] over 139,015 labelled-both edges, 6,312 threads: rule met. Same sign for binary_llm (-0.154) and VADER (-0.057). Weekly alignment excess correlates -0.61 (GT#1) / -0.68 (GT#2) with truth (diagnostic only). | `results/llm/final/alignment/` |
