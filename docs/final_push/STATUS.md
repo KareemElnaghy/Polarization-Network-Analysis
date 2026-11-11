@@ -49,3 +49,6 @@ Tests: `.venv/Scripts/python.exe -m pytest -q` gives 106 passed, 1 failed (known
 ## Next
 1. Cheap lane, stay on this model: P1.8 (RQ4), P1.5 (Pipeline C1), P1.6, P1.7, P1.2 (long compute), G1.7, G1.6.
 2. **Then needs Fable:** G1.3-G1.5 (encoder training, selection, G-ENC gate).
+
+
+> **SHA note (2026-11-11):** before the first push, local commits were rewritten (author set to KareemElnaghy, co-author trailers removed). Content is unchanged. Old `f56e579` is now `d16b880`; old `533eb2d` (tag `prereg-final-v1`) is now `ec83d8c`. `docs/llm_decisions.md` D-E5/D-E6 still print the old SHA `f56e579`; it is left as frozen text and this note is the mapping.
