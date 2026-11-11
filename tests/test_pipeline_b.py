@@ -98,7 +98,7 @@ def test_sign_sources():
 
 
 def test_pipelines_do_not_read_labels():
-    for pkg in ["pipeline_a", "pipeline_b", "llm"]:
+    for pkg in ["pipeline_a", "pipeline_b", "pipeline_c", "llm", "encoder"]:
         for f in Path("src/algorithms", pkg).glob("*.py"):
             t = f.read_text()
             assert "camp_recovery" not in t and "processed/labels" not in t and "algorithms.eval" not in t and "..eval" not in t, f
