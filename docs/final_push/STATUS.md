@@ -5,8 +5,7 @@ Agent model this session: Sonnet 5.5 (cheap lane). Folder lives at `docs/final_p
 ## Now running
 | Task | Machine | Started | Log | ETA |
 |---|---|---|---|---|
-| P1.5 Pipeline C1, full 5% (R=50, 6 workers) | WIN CPU | 2026-11-11 12:54 | `logs_llm/pipeC1_5pct_full.log`; run `runs/llm/20261111T125450_pipeC1_5pct_full` (resumable: rerun `scripts/llm/run_pipeline_c.py runs/llm/20261102T150142_tier5pct --variant C1 --resume <run>`; stop by creating `<run>/STOP`) | ~2-3 h |
-| torch+sentence-transformers install into `.venv` (for G1.7) | WIN | 12:57 | `logs_llm/pip_torch.log` | minutes |
+| (none) | | | | |
 
 ## Done
 | Task | Headline result | File |
@@ -24,6 +23,8 @@ Agent model this session: Sonnet 5.5 (cheap lane). Folder lives at `docs/final_p
 | P1.4 why A is negative (H-AN) | (i) rho(s_t, GT#1) = -0.66, Holm p = 0.13; (ii) \|rho_A\| - \|partial\| = +0.27 CI [+0.04, +0.43]. Both conditions met as written. Shift-share: only 3% of P_A variance from edge-type mix. | `results/llm/final/a_negative/` (two run folders exist: first run and rerun after a wording fix; the second is canonical) |
 
 Tests: `.venv/Scripts/python.exe -m pytest -q` gives 106 passed, 1 failed (known Windows `termios` failure in `test_label_tool_resume_back_skip`).
+| P1.5 | C1 at 5%: does not beat B (GT#1 delta +0.10, CI [-0.08,+0.31], Holm p 0.55); beats A (A is negative, H-AN) | `results/llm/final/pipeline_c/C1/` |
+| G1.7 | C2 head: OOF R2 0.29, rho 0.53, pilot acc 74.6% vs LLM 73.2%. C2 at 5%: does not beat B (GT#2 delta +0.20, CI [-0.21,+0.47]); beats A | `data/llm/c2/c2_quality.json`, `results/llm/final/pipeline_c/C2/` |
 
 ## Needs a human
 - [ ] Fill in `docs/final_push/PROJECT_FACTS.md`: deadline, presentation date, hard stop; UBU CPU/RAM/GPU; MAC CPU; LAN/SSH/shared drive/internet; who runs what. (Detected on WIN: RTX 3090, 24 GB.)
