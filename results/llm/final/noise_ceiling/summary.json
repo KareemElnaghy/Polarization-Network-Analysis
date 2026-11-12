@@ -1,0 +1,41 @@
+{
+ "P_A": {
+  "rel_median": 0.5560875369499286,
+  "rel_p05": 0.44268337805058255,
+  "rel_p95": 0.6856650480992941,
+  "r_half_median": 0.38538139009837125,
+  "gt1_excess": {
+   "rho_full": -0.6118368005160458,
+   "rel_GT": 0.93,
+   "disattenuated_rho": -0.8507903200796413,
+   "note": null
+  },
+  "gt2": {
+   "rho_full": -0.4755684567005322,
+   "rel_GT": 0.79,
+   "disattenuated_rho": -0.7175099280140074,
+   "note": null
+  }
+ },
+ "P_B": {
+  "rel_median": -0.08227116849935011,
+  "rel_p05": -0.45899979853411466,
+  "rel_p95": 0.2511546371769602,
+  "r_half_median": -0.03950975649088856,
+  "gt1_excess": {
+   "rho_full": -0.029592001290114498,
+   "rel_GT": 0.93,
+   "disattenuated_rho": null,
+   "note": "undefined or outside [-1,1]: reliability too low to disattenuate meaningfully"
+  },
+  "gt2": {
+   "rho_full": 0.17303660699887113,
+   "rel_GT": 0.79,
+   "disattenuated_rho": null,
+   "note": "undefined or outside [-1,1]: reliability too low to disattenuate meaningfully"
+  }
+ },
+ "label": "A2 split-half noise ceilings, 20 thread splits, R=20 nulls; rel_GT2 is a stand-in (5% sample stability)",
+ "rule": "if rel_B < 0.3 the observed rho_B is bounded by noise and the density ladder is the decisive test",
+ "rel_B_below_0.3": true
+}

@@ -25,6 +25,8 @@ Agent model this session: Sonnet 5.5 (cheap lane). Folder lives at `docs/final_p
 Tests: `.venv/Scripts/python.exe -m pytest -q` gives 106 passed, 1 failed (known Windows `termios` failure in `test_label_tool_resume_back_skip`).
 | P1.5 | C1 at 5%: does not beat B (GT#1 delta +0.10, CI [-0.08,+0.31], Holm p 0.55); beats A (A is negative, H-AN) | `results/llm/final/pipeline_c/C1/` |
 | G1.7 | C2 head: OOF R2 0.29, rho 0.53, pilot acc 74.6% vs LLM 73.2%. C2 at 5%: does not beat B (GT#2 delta +0.20, CI [-0.21,+0.47]); beats A | `data/llm/c2/c2_quality.json`, `results/llm/final/pipeline_c/C2/` |
+| P1.2 | Split-half noise ceilings (20 splits, R=20; 10 on WIN, 10 on MAC). Spearman-Brown reliability P_A 0.56 [0.44, 0.69]; P_B -0.08 [-0.46, 0.25], so rel_B < 0.3 (pre-registered rule: observed rho_B is bounded by noise; density ladder decisive). Disattenuation undefined for B. | `results/llm/final/noise_ceiling/` |
+
 
 ## Needs a human
 - [ ] Fill in `docs/final_push/PROJECT_FACTS.md`: deadline, presentation date, hard stop; UBU CPU/RAM/GPU; MAC CPU; LAN/SSH/shared drive/internet; who runs what. (Detected on WIN: RTX 3090, 24 GB.)
@@ -52,3 +54,6 @@ Tests: `.venv/Scripts/python.exe -m pytest -q` gives 106 passed, 1 failed (known
 
 
 > **SHA note (2026-11-11):** before the first push, local commits were rewritten (author set to KareemElnaghy, co-author trailers removed). Content is unchanged. Old `f56e579` is now `d16b880`; old `533eb2d` (tag `prereg-final-v1`) is now `ec83d8c`. `docs/llm_decisions.md` D-E5/D-E6 still print the old SHA `f56e579`; it is left as frozen text and this note is the mapping.
+
+### Handoff (P1.2 -> CP1, Fable)
+P_B split-half reliability is about zero at 5% (halves have half the edges, Spearman-Brown on a negative r is not meaningful). The pre-registered rule fires. Open for CP1: how to word it (noise ceiling vs. no signal) and whether it reframes the headline. Not interpreted further here.
