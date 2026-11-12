@@ -5,7 +5,7 @@ Agent model this session: Sonnet 5.5 (cheap lane). Folder lives at `docs/final_p
 ## Now running
 | Task | Machine | Started | Log | ETA |
 |---|---|---|---|---|
-| (none) | | | | |
+| P1.6/P1.7 B re-runs queue (noise curve, thinning, windows; R=20, 14 workers, budget 6.2 h) | WIN CPU | 2026-11-12 | `logs_llm/b_jobs.log`; outputs `runs/final_b_jobs/` (resumable: rerun `scripts/final/b_jobs.py --hours H`; stop with `runs/final_b_jobs/STOP`) | ~6 h |
 
 ## Done
 | Task | Headline result | File |
@@ -57,3 +57,7 @@ Tests: `.venv/Scripts/python.exe -m pytest -q` gives 106 passed, 1 failed (known
 
 ### Handoff (P1.2 -> CP1, Fable)
 P_B split-half reliability is about zero at 5% (halves have half the edges, Spearman-Brown on a negative r is not meaningful). The pre-registered rule fires. Open for CP1: how to word it (noise ceiling vs. no signal) and whether it reframes the headline. Not interpreted further here.
+
+### Partial P1.6 / P1.7 (cheap parts done)
+- P1.6 steps 2-4 (`results/llm/final/rq3/`): no rung beats B (all Holm p = 1.0). Pilot accuracy rises from VADER 48% to binary 73% to continuous 79% (C2 75%) while rho_B stays null on both truths, so the ladder does not predict GT correlation. Secondary/exploratory.
+- P1.7 parts 3-4 (`results/llm/final/rq2/`): within-camp share of negative edges correlates +0.66 (GT#1) / +0.67 (GT#2) with GT, mirroring the negative alignment-excess correlation; A/B rank divergence unrelated to it (rho -0.17, p 0.13). Exploratory.
