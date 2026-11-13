@@ -5,7 +5,8 @@ Agent model this session: Sonnet 5.5 (cheap lane). Folder lives at `docs/final_p
 ## Now running
 | Task | Machine | Started | Log | ETA |
 |---|---|---|---|---|
-| (none) | | | | |
+| G1.5 retry: E3 = deberta-v3-large, 1 epoch, lr 1e-5, effective batch 32 (micro 8 x accum 4: micro 16 spilled out of the 24 GB card), 6 h box from 06:15 | WIN GPU | 2026-11-13 06:15 | `logs_llm/encoder_E3.log` | ~5 h |
+| P1.6 H3 seeds 5-9 (b_jobs queue, 12 workers) | WIN CPU | 2026-11-13 03:44 | `logs_llm/b_jobs.log` | ~7 h |
 
 ## Done
 | Task | Headline result | File |
@@ -71,3 +72,9 @@ Run with R=20 (baseline p=0 reproduces the R=50 run: rho -0.024/+0.177 vs -0.030
 
 ### CP1 done (2026-11-13, Opus standing in for Fable)
 `docs/reports/final_phase1_interim.md`. Verdict: noise explanation favoured, signs disfavoured, mechanism rejected in strong form (weak alignment). Rung 2. The four CP1 handoffs above are resolved there (H-AN partially supported, composition caveat on every "beats A", weekly alignment is composition, flat noise curve). Pending: H3 final verdict after 10 seeds (queue relaunched, `logs_llm/b_jobs.log`).
+
+### G1.3-G1.5 (Opus standing in for Fable)
+- E1 deberta-v3-base: val agree acc 0.763, Guo Spearman 0.796 (64 min). E2 ModernBERT-base: 0.767 / 0.803 (45 min). transformers upgraded 4.46.3 -> 4.48.3 for ModernBERT (E1 reload verified).
+- Selection (val only): within 0.5 pp -> faster: E2 (1,099 vs 1,015 pairs/s).
+- G-ENC on E2 (`results/llm/final/encoder/gate.json`): (1) test acc 0.771 FAIL (>= 0.85); (2) Guo Spearman 0.798 FAIL (>= 0.80); (3) pilot 3-class 0.747 pass (LLM 0.72 on the same items); (4) weekly P_A Spearman 0.994 pass; (5) 1,119 pairs/s pass. Per SPEC_ENCODER section 7: one retry (E3, deberta-v3-large) running; then re-select among E1/E2/E3 and re-run the gate. If it fails again: G-ENC fails and the Phase 2 fallback (LLM on 20% tier, 12 fixed weeks) applies.
+- 5%-tier encoder outputs for E2 are in `data/llm/encoder_outputs.sqlite` (model `enc-ModernBERT-base-distill-v1`).

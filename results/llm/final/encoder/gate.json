@@ -1,0 +1,89 @@
+{
+ "selected_checkpoint": "data\\llm\\encoder\\E2\\best.pt",
+ "sha256": "e1131365a1ccdecbf0b7c772ab09f9ac80a6943733e6bb6abdd76323ade02c16",
+ "backbone": "answerdotai/ModernBERT-base",
+ "best_step": 17738,
+ "store_ctx": {
+  "model": "enc-ModernBERT-base-distill-v1",
+  "quant": "fp16",
+  "prompt_version": "enc-v1",
+  "temperature": 0.0,
+  "seed": 0,
+  "prob_method": "encoder_softmax"
+ },
+ "checks": {
+  "1_test_agree_acc": {
+   "value": 0.7705548274355614,
+   "threshold": 0.85,
+   "pass": false
+  },
+  "2_test_guo_spearman": {
+   "value": 0.7975773830938354,
+   "threshold": 0.8,
+   "pass": false
+  },
+  "3_pilot_3class_acc": {
+   "value": 0.7466666666666667,
+   "threshold": 0.65,
+   "pass": true
+  },
+  "4_weekly_PA_spearman": {
+   "value": 0.993871956136107,
+   "threshold": 0.9,
+   "pass": true
+  },
+  "5_pairs_per_s": {
+   "value": 1118.7804523157063,
+   "threshold": 200.0,
+   "pass": true
+  }
+ },
+ "all_pass": false,
+ "non_gating": {
+  "test_emo_acc": 0.8442114460463084,
+  "test_host_acc": 0.8446483180428135,
+  "test_attack_acc": 0.9582350371341197,
+  "test_C1_weight_spearman": 0.7856312538999413,
+  "test_confusion_agreement_llm_rows_enc_cols": [
+   [
+    4862,
+    522,
+    1686
+   ],
+   [
+    552,
+    2946,
+    810
+   ],
+   [
+    1155,
+    527,
+    9830
+   ]
+  ],
+  "n_test": 22890,
+  "pilot_n": 150,
+  "pilot_llm_acc_same_items": 0.72,
+  "weekly_P_A_pearson": 0.9960508075537863,
+  "n_weeks": 53
+ },
+ "full_tier_scoring_pairs_per_s": 918.6294613039096,
+ "selection": {
+  "candidates": [
+   {
+    "run": "runs/llm/20261113T045544_encoder_E2",
+    "checkpoint": "data\\llm\\encoder\\E2\\best.pt",
+    "val_agree_acc": 0.7674515445184736,
+    "pairs_per_s_val20k": 1099.3642077990594
+   },
+   {
+    "run": "runs/llm/20261113T034350_encoder_E1",
+    "checkpoint": "data\\llm\\encoder\\E1\\best.pt",
+    "val_agree_acc": 0.762946698970321,
+    "pairs_per_s_val20k": 1015.3089455112969
+   }
+  ],
+  "selected": "runs/llm/20261113T045544_encoder_E2",
+  "rule_applied": "val accuracies within 0.5 pp -> faster candidate"
+ }
+}
