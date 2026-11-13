@@ -1,10 +1,10 @@
 {
- "selected_checkpoint": "data\\llm\\encoder\\E2\\best.pt",
- "sha256": "e1131365a1ccdecbf0b7c772ab09f9ac80a6943733e6bb6abdd76323ade02c16",
- "backbone": "answerdotai/ModernBERT-base",
+ "selected_checkpoint": "data\\llm\\encoder\\E3\\best.pt",
+ "sha256": "42829001895a2c2e325edf9751355e206cfff862c2c1f42e2d716c70d9df622f",
+ "backbone": "microsoft/deberta-v3-large",
  "best_step": 17738,
  "store_ctx": {
-  "model": "enc-ModernBERT-base-distill-v1",
+  "model": "enc-deberta-v3-large-distill-v1",
   "quant": "fp16",
   "prompt_version": "enc-v1",
   "temperature": 0.0,
@@ -13,77 +13,80 @@
  },
  "checks": {
   "1_test_agree_acc": {
-   "value": 0.7705548274355614,
+   "value": 0.7966360856269113,
    "threshold": 0.85,
    "pass": false
   },
   "2_test_guo_spearman": {
-   "value": 0.7975773830938354,
+   "value": 0.8407443272669715,
    "threshold": 0.8,
-   "pass": false
+   "pass": true
   },
   "3_pilot_3class_acc": {
-   "value": 0.7466666666666667,
+   "value": 0.78,
    "threshold": 0.65,
    "pass": true
   },
   "4_weekly_PA_spearman": {
-   "value": 0.993871956136107,
+   "value": 0.9947589098532494,
    "threshold": 0.9,
    "pass": true
   },
   "5_pairs_per_s": {
-   "value": 1118.7804523157063,
+   "value": 196.5020448692687,
    "threshold": 200.0,
-   "pass": true
+   "pass": false
   }
  },
  "all_pass": false,
  "non_gating": {
-  "test_emo_acc": 0.8442114460463084,
-  "test_host_acc": 0.8446483180428135,
-  "test_attack_acc": 0.9582350371341197,
-  "test_C1_weight_spearman": 0.7856312538999413,
+  "test_emo_acc": 0.8595456531236347,
+  "test_host_acc": 0.854084753167322,
+  "test_attack_acc": 0.9619484491044125,
+  "test_C1_weight_spearman": 0.8276428005786127,
   "test_confusion_agreement_llm_rows_enc_cols": [
    [
-    4862,
-    522,
-    1686
+    5200,
+    477,
+    1393
    ],
    [
-    552,
-    2946,
-    810
+    524,
+    3084,
+    700
    ],
    [
-    1155,
-    527,
-    9830
+    1055,
+    506,
+    9951
    ]
   ],
   "n_test": 22890,
   "pilot_n": 150,
   "pilot_llm_acc_same_items": 0.72,
-  "weekly_P_A_pearson": 0.9960508075537863,
+  "weekly_P_A_pearson": 0.9959824769184924,
   "n_weeks": 53
  },
- "full_tier_scoring_pairs_per_s": 918.6294613039096,
+ "full_tier_scoring_pairs_per_s": 48.84449154352236,
  "selection": {
   "candidates": [
    {
+    "run": "runs/llm/20261113T060332_encoder_E3",
+    "checkpoint": "data\\llm\\encoder\\E3\\best.pt",
+    "val_agree_acc": 0.792625681405209
+   },
+   {
     "run": "runs/llm/20261113T045544_encoder_E2",
     "checkpoint": "data\\llm\\encoder\\E2\\best.pt",
-    "val_agree_acc": 0.7674515445184736,
-    "pairs_per_s_val20k": 1099.3642077990594
+    "val_agree_acc": 0.7674515445184736
    },
    {
     "run": "runs/llm/20261113T034350_encoder_E1",
     "checkpoint": "data\\llm\\encoder\\E1\\best.pt",
-    "val_agree_acc": 0.762946698970321,
-    "pairs_per_s_val20k": 1015.3089455112969
+    "val_agree_acc": 0.762946698970321
    }
   ],
-  "selected": "runs/llm/20261113T045544_encoder_E2",
-  "rule_applied": "val accuracies within 0.5 pp -> faster candidate"
+  "selected": "runs/llm/20261113T060332_encoder_E3",
+  "rule_applied": "higher val agreement accuracy"
  }
 }

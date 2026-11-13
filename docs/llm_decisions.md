@@ -132,3 +132,23 @@ Every rule, threshold, the encoder checkpoint, the label rule (the 58 supporter 
 ### What is exploratory (every output is labelled `exploratory`)
 - C3 (edge-embedding coherence), the per-venue split, PolitiSky24, SRQ, `gemma3:12b`, and 2015.
 - Any analysis not listed in this entry.
+
+## D-E6a. Encoder freeze after a failed G-ENC gate (deviation from PREREG, 2026-11-13)
+
+**Gate result: G-ENC FAILED** under SPEC_ENCODER §5–7, after the one permitted retry. Selection (validation only, recorded in `results/llm/final/encoder/gate.json` before any test/pilot read): E3 `microsoft/deberta-v3-large` (val agreement 0.7926) over E2 ModernBERT-base (0.7675) and E1 deberta-v3-base (0.7629).
+
+Selected checkpoint: `data/llm/encoder/E3/best.pt`, sha256 `42829001895a2c2e325edf9751355e206cfff862c2c1f42e2d716c70d9df622f`, store model `enc-deberta-v3-large-distill-v1` / `fp16` / `enc-v1`.
+
+| Check | Value | Threshold | Result |
+|---|---|---|---|
+| 1. Test agreement accuracy vs LLM (n = 22,890) | 0.797 | ≥ 0.85 | **fail** |
+| 2. Test Guo-weight Spearman | 0.841 | ≥ 0.80 | pass |
+| 3. Pilot 3-class accuracy vs human consensus (n = 150) | 0.780 (LLM on the same items: 0.720) | ≥ 0.65 | pass |
+| 4. Weekly P_A Spearman, encoder vs LLM, 5% tier (53 weeks) | 0.995 (Pearson 0.996) | ≥ 0.90 | pass |
+| 5. Throughput | 196.5 pairs/s in the gate run | ≥ 200 | **fail as recorded** |
+
+Check 5 was measured while the 12-worker CPU job queue was running and starving tokenization. Re-measured on the idle machine (same 3090, 8,000 val pairs): 376–390 pairs/s. The recorded gate value is not changed; the re-measurement is reported next to it.
+
+**Deviation.** The pre-registered fallback (LLM on the 20% tier for 12 weeks, about 3.5 days) does not fit the project timeline, which needs Phase 2 results immediately for the remaining RQs. Phase 2 therefore uses the E3 encoder anyway. Every encoder-based result is labelled *"deviation: encoder failed G-ENC check 1 (edge-level agreement 0.80 < 0.85)"*. Reasoning recorded now, before any encoder-based GT comparison: the failed check is edge-level imitation of the LLM's argmax, where most errors are agree↔disagree confusions near the neutral boundary; the pipeline-level fidelity check (4) passes at 0.995, and the encoder agrees with human labels more often than the LLM does (check 3). The P2.5 anchor check (encoder vs LLM A/B/C at 5% on the same edges) is mandatory and reported next to every ladder result. The fallback design (LLM, 20% tier, ISO weeks 2, 6, …, 46) remains available as a robustness run if time allows.
+
+**Freeze.** As of this entry the E3 checkpoint above, the store context, and all pipeline rules (D-E6) are frozen for Phase 2 and Phase 3. No further encoder training or selection.
