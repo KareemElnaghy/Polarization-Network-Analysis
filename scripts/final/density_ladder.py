@@ -86,6 +86,7 @@ def main():
     todo = [w for w in weeks if any(not (out / p / f"{w}.csv").exists() for p in pipes)]
     if not todo:
         print("nothing to do", flush=True)
+        print("DONE", flush=True)
         return
     ctx = eo.ctx_for(BACKBONE)
     enc = Store(a.store).table(ctx).drop(columns=["model", "quant", "prompt_version", "temperature", "seed"], errors="ignore")
@@ -126,6 +127,8 @@ def main():
             pd.DataFrame([row]).to_csv(f, index=False)
             print(f"d{a.density:g} {p} {wk} P={row.get('P_B', row.get('P_A'))} n={row.get('n_nodes_giant', row.get('n'))} {row['seconds']:.0f}s "
                   f"(total {(time.time() - t0) / 3600:.2f} h)", flush=True)
+
+    print("DONE", flush=True)
 
 
 if __name__ == "__main__":
