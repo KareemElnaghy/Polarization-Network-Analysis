@@ -5,8 +5,8 @@ Agent model this session: Sonnet 5.5 (cheap lane). Folder lives at `docs/final_p
 ## Now running
 | Task | Machine | Started | Log | ETA |
 |---|---|---|---|---|
-| G1.5 retry: E3 = deberta-v3-large, 1 epoch, lr 1e-5, effective batch 32 (micro 8 x accum 4: micro 16 spilled out of the 24 GB card), 6 h box from 06:15 | WIN GPU | 2026-11-13 06:15 | `logs_llm/encoder_E3.log` | ~5 h |
-| P1.6 H3 seeds 5-9 (b_jobs queue, 12 workers) | WIN CPU | 2026-11-13 03:44 | `logs_llm/b_jobs.log` | ~7 h |
+| P2.2 encoder inference (E3, frozen D-E6a): 20% tier, then 1% tier, then the rest of the full shared venue (13.5M pairs). Resumable; chain waits on the 20% PID | WIN GPU | 2026-11-13 ~14:00 | `logs_llm/encode_20pct.log`, `encode_1pct.log`, `encode_full.log` | 20% ~2 h; full ~12 h total |
+| P2.3 ladder at 5% (A, B, B_bin, C1; R=20; 8 workers) | WIN CPU | 2026-11-13 | `logs_llm/ladder_5pct.log` | ~1 h |
 
 ## Done
 | Task | Headline result | File |
@@ -41,7 +41,7 @@ Tests: `.venv/Scripts/python.exe -m pytest -q` gives 106 passed, 1 failed (known
 
 ## Gates
 - prereg-final-v1 tag: **done** (2026-11-11, commit `533eb2d`)
-- G-ENC: pending
+- G-ENC: **FAILED** after the retry (E3: check 1 test agreement 0.797 < 0.85; check 5 196 pairs/s under CPU contention, 390 idle). Phase 2 proceeds with E3 as a declared deviation (D-E6a, 2026-11-13), because the timeline cannot absorb the 3.5-day LLM fallback.
 - Phase 3 gate: pending
 
 ## Handoff
@@ -50,9 +50,10 @@ Tests: `.venv/Scripts/python.exe -m pytest -q` gives 106 passed, 1 failed (known
 - **For CP1: alignment vs tracking.** H-AL holds at the edge level (delta-w -0.092) yet weekly alignment excess is negatively correlated with GT. Needs interpretation against the three-explanation table in PLAN.md.
 
 ## Next
-1. Cheap lane, stay on this model: P1.8 (RQ4), P1.5 (Pipeline C1), P1.6, P1.7, P1.2 (long compute), G1.7, G1.6.
-2. **Then needs Fable:** G1.3-G1.5 (encoder training, selection, G-ENC gate).
-
+1. When the 20% and 1% tiers are encoded: `scripts/final/density_ladder.py --density 0.2` and `--density 0.01` (CPU, 8-10 workers while the GPU encodes).
+2. When the full venue is encoded: `--density 1.0` (R=50; measure the per-week time first; if > 48 h projected, use `--weeks odd`).
+3. P2.4 statistics per density (rho with CIs, H1a/H1b/H1c, camp recovery, alignment) and P2.5 anchor (encoder vs LLM A/B/C at 5%, mandatory under D-E6a).
+4. Ladder figure (A8.7).
 
 > **SHA note (2026-11-11):** before the first push, local commits were rewritten (author set to KareemElnaghy, co-author trailers removed). Content is unchanged. Old `f56e579` is now `d16b880`; old `533eb2d` (tag `prereg-final-v1`) is now `ec83d8c`. `docs/llm_decisions.md` D-E5/D-E6 still print the old SHA `f56e579`; it is left as frozen text and this note is the mapping.
 
@@ -78,3 +79,7 @@ Run with R=20 (baseline p=0 reproduces the R=50 run: rho -0.024/+0.177 vs -0.030
 - Selection (val only): within 0.5 pp -> faster: E2 (1,099 vs 1,015 pairs/s).
 - G-ENC on E2 (`results/llm/final/encoder/gate.json`): (1) test acc 0.771 FAIL (>= 0.85); (2) Guo Spearman 0.798 FAIL (>= 0.80); (3) pilot 3-class 0.747 pass (LLM 0.72 on the same items); (4) weekly P_A Spearman 0.994 pass; (5) 1,119 pairs/s pass. Per SPEC_ENCODER section 7: one retry (E3, deberta-v3-large) running; then re-select among E1/E2/E3 and re-run the gate. If it fails again: G-ENC fails and the Phase 2 fallback (LLM on 20% tier, 12 fixed weeks) applies.
 - 5%-tier encoder outputs for E2 are in `data/llm/encoder_outputs.sqlite` (model `enc-ModernBERT-base-distill-v1`).
+- **G1.5 retry (2026-11-13):** E3 deberta-v3-large val 0.793 / Guo 0.844 (4.9 h). Re-selection picked E3 (higher val accuracy). Gate on E3: (1) 0.797 FAIL, (2) 0.841 pass, (3) 0.780 pass (LLM 0.72), (4) 0.995 pass, (5) 196.5 FAIL as recorded (idle re-measure 376-390 pairs/s). G-ENC fails. User needs Phase 2 results immediately for the other RQs, so D-E6a records a deviation: E3 frozen (sha256 42829001...), every encoder result labelled. 5%-tier E3 rows are in `data/llm/encoder_outputs.sqlite`.
+- **Tiers are independent thread samples, not nested** (5% threads in 20%: 23%; 1% in 5%: 5.5%). Each tier is encoded separately; the full venue covers all.
+### H3 final (10 seeds, 2026-11-13)
+H3 **passes**: camp recovery 0.518 -> 0.511 and rho_B(GT#2) 0.177 -> 0.059 strictly decreasing over p (Spearman -1.0 each), small effects. 2-week windows (exploratory): rho_B GT#2 +0.40 [+0.15, +0.62], perm p 0.10. CP1 report updated.
