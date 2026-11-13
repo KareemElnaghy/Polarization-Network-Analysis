@@ -30,7 +30,7 @@ def resolve_weeks(spec, all_weeks):
     if spec is None:
         return all_weeks
     if spec == "odd":
-        return [w for w in all_weeks if pd.Timestamp(w).isocalendar()[0] == 2016 and pd.Timestamp(w).isocalendar()[1] % 2 == 1]
+        return [w for w in all_weeks if pd.Timestamp(w).isocalendar()[1] % 2 == 1]  # 26 odd ISO weeks of 2016 + 2015-W53 (week of 2015-12-28) = 27
     if "-" in spec and not spec.startswith("20"):
         lo, hi = map(int, spec.split("-"))
         return all_weeks[lo - 1: hi]
