@@ -68,3 +68,6 @@ Run with R=20 (baseline p=0 reproduces the R=50 run: rho -0.024/+0.177 vs -0.030
 - Thinning: 25% of threads gives higher rho (GT#1 0.21, GT#2 0.24) than 50% (0.09/0.17) and the full 5% (-0.03/+0.17); no density gain visible, giant-component mean degree 2.76 / 2.96 / 3.29.
 - Rolling 4-week windows (50): rho GT#1 +0.09 [-0.33, 0.50], GT#2 +0.17 [-0.24, 0.50]. Months (13): -0.02 / +0.31 (descriptive).
 - Handoff to CP1 (Fable): how to word a flat noise curve alongside rel_B about 0 (P_B insensitive to sign quality, not just noisy?). Not interpreted here.
+
+### CP1 done (2026-11-13, Opus standing in for Fable)
+`docs/reports/final_phase1_interim.md`. Verdict: noise explanation favoured, signs disfavoured, mechanism rejected in strong form (weak alignment). Rung 2. The four CP1 handoffs above are resolved there (H-AN partially supported, composition caveat on every "beats A", weekly alignment is composition, flat noise curve). Pending: H3 final verdict after 10 seeds (queue relaunched, `logs_llm/b_jobs.log`).
