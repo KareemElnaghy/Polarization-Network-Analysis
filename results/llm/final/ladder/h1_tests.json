@@ -1,0 +1,40 @@
+{
+ "label": "deviation: encoder failed G-ENC check 1 (D-E6a)",
+ "densities_complete_for_B": [
+  0.05
+ ],
+ "anchor": [
+  {
+   "pipeline": "A",
+   "n_weeks": 53,
+   "spearman": 0.9947589098532494,
+   "pearson": 0.9959824769184924,
+   "mean_llm": 2.992366730040832,
+   "mean_encoder": 2.886297165733816
+  },
+  {
+   "pipeline": "B",
+   "n_weeks": 53,
+   "spearman": 0.6394936300596678,
+   "pearson": 0.6952252820790403,
+   "mean_llm": 0.0046788590420240245,
+   "mean_encoder": 0.02100937537430287
+  },
+  {
+   "pipeline": "B_bin",
+   "n_weeks": 53,
+   "spearman": 0.5560393484921786,
+   "pearson": 0.5359810999046494,
+   "mean_llm": 0.023549408576122012,
+   "mean_encoder": 0.03668283297000112
+  },
+  {
+   "pipeline": "C1",
+   "n_weeks": 53,
+   "spearman": 0.6297371391711015,
+   "pearson": 0.8629884733204116,
+   "mean_llm": -0.003369176242431713,
+   "mean_encoder": 0.01188943349949392
+  }
+ ]
+}
