@@ -83,3 +83,8 @@ Run with R=20 (baseline p=0 reproduces the R=50 run: rho -0.024/+0.177 vs -0.030
 - **Tiers are independent thread samples, not nested** (5% threads in 20%: 23%; 1% in 5%: 5.5%). Each tier is encoded separately; the full venue covers all.
 ### H3 final (10 seeds, 2026-11-13)
 H3 **passes**: camp recovery 0.518 -> 0.511 and rho_B(GT#2) 0.177 -> 0.059 strictly decreasing over p (Spearman -1.0 each), small effects. 2-week windows (exploratory): rho_B GT#2 +0.40 [+0.15, +0.62], perm p 0.10. CP1 report updated.
+### P2 interim: 1% / 5% / 20% rungs (2026-11-14 00:40; D-E6a deviation-labelled; `results/llm/final/ladder/`)
+- rho_B GT#1: +0.00 / +0.10 / -0.28; GT#2: +0.18 / +0.21 / -0.36. Three-density H1a preview fails (Spearman -0.5), but H1a is pre-registered over four densities incl. 100%: not final.
+- Camp recovery rises with density: B 0.547 / 0.525 / 0.550; weeks above null 19 / 21 / 39 (B_bin 43/53 at 20%). Mean giant degree 2.8 / 3.3 / 5.0.
+- Diagnostic (exploratory): at 20% P_B correlates +0.34 with the r/politics share (-0.15 at 5%); partial rho_B given the share is -0.05 (GT#1) / -0.17 (GT#2). The negative turn at 20% is largely venue composition, the same confound as A.
+- Running: full-venue encoding (odd weeks first) -> chained `density_ladder.py --density 1.0 --weeks odd --workers 10` -> `ladder_stats.py` (log `logs_llm/ladder_full_odd.log`, `logs_llm/ladder_stats_full_odd.log`).

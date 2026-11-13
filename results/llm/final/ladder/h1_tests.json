@@ -1,8 +1,42 @@
 {
  "label": "deviation: encoder failed G-ENC check 1 (D-E6a)",
  "densities_complete_for_B": [
-  0.05
+  0.01,
+  0.05,
+  0.2
  ],
+ "H1a": {
+  "gt1_excess": {
+   "densities": [
+    0.01,
+    0.05,
+    0.2
+   ],
+   "rho_B": [
+    0.00495176299837787,
+    0.09579100145137881,
+    -0.2803580067731011
+   ],
+   "spearman_density_rho": -0.5,
+   "monotone_pass": false,
+   "H1a_pass": false
+  },
+  "gt2": {
+   "densities": [
+    0.01,
+    0.05,
+    0.2
+   ],
+   "rho_B": [
+    0.17706821480406384,
+    0.20980487018222865,
+    -0.36486050636994033
+   ],
+   "spearman_density_rho": -0.5,
+   "monotone_pass": false,
+   "H1a_pass": false
+  }
+ },
  "anchor": [
   {
    "pipeline": "A",
