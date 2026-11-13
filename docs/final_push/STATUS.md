@@ -5,7 +5,7 @@ Agent model this session: Sonnet 5.5 (cheap lane). Folder lives at `docs/final_p
 ## Now running
 | Task | Machine | Started | Log | ETA |
 |---|---|---|---|---|
-| P1.6/P1.7 B re-runs queue (noise curve, thinning, windows; R=20, 14 workers, budget 6.2 h) | WIN CPU | 2026-11-12 | `logs_llm/b_jobs.log`; outputs `runs/final_b_jobs/` (resumable: rerun `scripts/final/b_jobs.py --hours H`; stop with `runs/final_b_jobs/STOP`) | ~6 h |
+| (none) | | | | |
 
 ## Done
 | Task | Headline result | File |
@@ -61,3 +61,10 @@ P_B split-half reliability is about zero at 5% (halves have half the edges, Spea
 ### Partial P1.6 / P1.7 (cheap parts done)
 - P1.6 steps 2-4 (`results/llm/final/rq3/`): no rung beats B (all Holm p = 1.0). Pilot accuracy rises from VADER 48% to binary 73% to continuous 79% (C2 75%) while rho_B stays null on both truths, so the ladder does not predict GT correlation. Secondary/exploratory.
 - P1.7 parts 3-4 (`results/llm/final/rq2/`): within-camp share of negative edges correlates +0.66 (GT#1) / +0.67 (GT#2) with GT, mirroring the negative alignment-excess correlation; A/B rank divergence unrelated to it (rho -0.17, p 0.13). Exploratory.
+
+### P1.6 noise curve and P1.7 thinning/windows (queue finished 2026-11-13; `results/llm/final/rq3_rq2_jobs/`)
+Run with R=20 (baseline p=0 reproduces the R=50 run: rho -0.024/+0.177 vs -0.030/+0.173). A forced Windows Update restart on 11-12 03:33 cost ~9 h; relaunched, ran 5.95 h of budget (23 jobs). Seeds finished: noise p=0.05/0.2: 3, p=0.1/0.4: 4 (p=0 is deterministic); thinning: 3 seeds each. Fallback taken: not the specified 10 seeds. 2-week windows not run.
+- Noise curve is flat: mean P_B moves -0.008 to -0.028 and rho_B shows no monotone decline with p (GT#1: 0.16, 0.04, 0.04, 0.08; GT#2: 0.28, 0.14, 0.10, 0.13; seed sd 0.03-0.23). Camp-recovery BA falls only 0.518 -> 0.511.
+- Thinning: 25% of threads gives higher rho (GT#1 0.21, GT#2 0.24) than 50% (0.09/0.17) and the full 5% (-0.03/+0.17); no density gain visible, giant-component mean degree 2.76 / 2.96 / 3.29.
+- Rolling 4-week windows (50): rho GT#1 +0.09 [-0.33, 0.50], GT#2 +0.17 [-0.24, 0.50]. Months (13): -0.02 / +0.31 (descriptive).
+- Handoff to CP1 (Fable): how to word a flat noise curve alongside rel_B about 0 (P_B insensitive to sign quality, not just noisy?). Not interpreted here.
